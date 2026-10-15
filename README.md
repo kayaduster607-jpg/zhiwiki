@@ -46,15 +46,7 @@ An evidence-first knowledge workspace that connects answers, sources, and revisi
 
 以仓库自带的虚构售后场景为例，你可以实际操作这条流程：
 
-```mermaid
-flowchart LR
-    A["导入售后政策"] --> B["提问并核对引用"]
-    B --> C["整理 Wiki 草稿"]
-    C --> D["审核后发布"]
-    D --> E["原文产生新版本"]
-    E --> F["关联知识待更新"]
-    F --> G["修订并重新发布"]
-```
+![从资料到知识更新：取证、沉淀、原文更新、知识待更新与修订发布](docs/images/knowledge-lifecycle.png)
 
 **每个结论都能展开来源，每次修订都留下版本。** 原文更新、Wiki 状态和人工发布共同构成知识维护的闭环。
 
@@ -192,21 +184,7 @@ python -B -m zhiwiki --config config.local.json serve --port 8875
 
 ## 系统架构
 
-```mermaid
-flowchart TB
-    UI["浏览器工作台"] --> API["FastAPI · JSON API / SSE"]
-    CLI["CLI"] --> AGENT["AgentEngine"]
-    API --> AGENT
-    API --> WIKI["WikiCompiler / 人工修订 / 发布"]
-    CLI --> WIKI
-    AGENT --> TOOLS["搜索原文 / 搜索 Wiki / 阅读证据"]
-    AGENT --> PROVIDER["OpenAI 兼容接口"]
-    WIKI --> PROVIDER
-    TOOLS --> STORE["KnowledgeStore"]
-    WIKI --> STORE
-    STORE --> INDEX["BM25Index · epoch 感知缓存"]
-    STORE --> DB[("SQLite WAL")]
-```
+![知证模块分层：浏览器与 CLI、Agent 与 Wiki 工作流、共享模型接口、检索与版本存储](docs/images/system-architecture.png)
 
 模块化单体让问答与知识维护共享数据规则：`AgentEngine` 管理取证循环，`KnowledgeStore` 管理版本与事务，`WikiCompiler` 组织草稿，发布由维护者显式执行。检索缓存、模型适配与 HTTP 层各有独立边界，方便单独测试和替换。
 
