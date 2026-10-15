@@ -1,0 +1,27 @@
+name: Core compatibility (no package installation)
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.9', '3.13']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Standard-library core and bytecode checks
+        run: python -B scripts/verify_core.py
+      - name: JavaScript state checks with preinstalled Node
+        run: node --test tests/*.cjs
+      - name: Environment diagnostics
+        run: python -B -m zhiwiki doctor

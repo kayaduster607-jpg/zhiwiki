@@ -1,0 +1,29 @@
+# 运行数据和本机配置不进入版本控制。
+data/
+config.local.json
+config.*.local.json
+config.private.json
+.env*
+.gcm/
+*.pem
+*.key
+*.p12
+*.pfx
+.idea/
+.vscode/
+node_modules/
+data-*/
+.venv/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+__pycache__/
+.pytest_cache/
+*.pyc
+reports/local-*
+reports/review-*
+reports/PROJECT_REVIEW_*.md
+reports/readiness-*.json
+# 本地书籍验证产物与正文不进入版本控制；保留脚本与PRD即可复现。
+reports/book-trial/
+reports/book-full-run/

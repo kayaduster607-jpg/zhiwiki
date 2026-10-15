@@ -1,0 +1,6 @@
+# 已在 Python 3.13.14 环境实际运行并验证的直接服务依赖。
+fastapi==0.141.1
+uvicorn==0.52.1
+pydantic==2.13.4
+httpx==0.28.1
+python-multipart==0.0.32

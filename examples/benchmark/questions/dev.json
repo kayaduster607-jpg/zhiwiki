@@ -1,0 +1,14 @@
+[
+  {"id":"dev-access","question":"雾岚观察员可以取消任务吗？管理员能看到成员密钥明文吗？","reference_answer":"观察员不能取消任务；管理员也不能查看他人密钥明文。","key_points":["观察员只可查看状态和脱敏日志","取消任务需要操作员或相应更高权限","管理员不能查看密钥明文"],"qrels":{"benchmark:access":2}},
+  {"id":"dev-queue","question":"一个雾岚工作区有多少个普通运行槽位？排队中的任务占槽位吗？","reference_answer":"每个工作区有三个普通运行槽位，排队任务不占运行槽位。","key_points":["三个同时运行槽位","排队不占槽位"],"qrels":{"benchmark:queue":2}},
+  {"id":"dev-retry","question":"TEMP_WORKER_LOST 自动重试几次，间隔是多少，任务编号会改变吗？","reference_answer":"最多自动重试两次，间隔依次三十秒和九十秒；沿用任务编号，attempt_no 不同。","key_points":["最多两次","三十秒和九十秒","任务编号不变但尝试编号改变"],"qrels":{"benchmark:retries":2}},
+  {"id":"dev-artifact","question":"雾岚成功任务产物和失败任务排错附件分别保留多久，从什么时候开始？","reference_answer":"普通成功任务产物从成功终态起保留七十二小时，失败排错附件从失败终态起保留二十四小时。","key_points":["成功七十二小时","失败附件二十四小时","从对应终态计算"],"qrels":{"benchmark:artifacts":2}},
+  {"id":"dev-release","question":"雾岚配置发布需要谁提交与复核，已排队任务会改用新配置吗？","reference_answer":"需两名不同管理员分别提交和复核；任务使用被接收时的配置快照，已排队任务不会因新发布而切换。","key_points":["两名不同管理员","提交人不能自审","排队任务保留接收时快照"],"qrels":{"benchmark:releases":2}},
+  {"id":"dev-incident","question":"I1 的十五分钟目标从何时起算，是保证十五分钟解决吗？","reference_answer":"从值班队列确认接收事件开始计算，仅指首次人工响应目标，不保证解决时间。","key_points":["确认接收为起点","十五分钟首次响应","不是解决保证"],"qrels":{"benchmark:incidents":2}},
+  {"id":"dev-maintenance","question":"雾岚例行维护在什么时间，已有运行任务与排队任务分别怎样处理？","reference_answer":"每周三北京时间22:00至22:20；运行任务继续，排队任务暂不调度，并暂停新任务接收。","key_points":["周三北京时间22:00–22:20","运行继续","排队暂停调度且新接收暂停"],"qrels":{"benchmark:maintenance":2}},
+  {"id":"dev-audit","question":"雾岚批量审计导出由谁申请和审批，生成文件保留多久？","reference_answer":"管理员申请，由另一名管理员审批；生成后的导出文件保留四十八小时。","key_points":["管理员申请","另一管理员审批不得自审","四十八小时"],"qrels":{"benchmark:audit-export":2}},
+  {"id":"dev-download","question":"雾岚观察员拿到了尚未过期的签名链接，就可以下载受限产物吗？","reference_answer":"不可以。签名链接仍受工作区权限和产物保留状态约束，观察员没有受限产物下载权。","key_points":["链接未过期不替代权限","观察员不能下载受限产物","还要检查产物保留状态"],"qrels":{"benchmark:access":2,"benchmark:artifacts":2}},
+  {"id":"dev-cancel-slot","question":"运行任务取消请求已接收后，雾岚槽位会立即释放并自动重试吗？","reference_answer":"不会立即释放，工作进程确认停止后才释放；已取消任务不会自动恢复或重试。","key_points":["先终止处理中","确认停止后释放","取消不自动恢复"],"qrels":{"benchmark:queue":2,"benchmark:retries":2}},
+  {"id":"dev-retention","question":"雾岚审计事件保留三十天，是否意味着成功任务产物也能下载三十天？","reference_answer":"不意味着。审计事件是三十天，普通成功任务产物从成功终态起保留七十二小时。","key_points":["区分审计与产物","审计三十天","成功产物七十二小时"],"qrels":{"benchmark:audit-export":2,"benchmark:artifacts":2}},
+  {"id":"dev-unknown","question":"雾岚平台采用 ZEPHYR_X9 容灾协议时的具体复制算法是什么？","reference_answer":"资料没有给出 ZEPHYR_X9 容灾协议或复制算法，无法确认。","key_points":["明确资料不足","不编造算法"],"qrels":{},"expect_abstain":true}
+]

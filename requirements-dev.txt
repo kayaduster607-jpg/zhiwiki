@@ -1,0 +1,3 @@
+# 测试环境沿用服务依赖；前端测试使用 Node.js 内置测试器。
+-r requirements.txt
+pytest==8.4.2

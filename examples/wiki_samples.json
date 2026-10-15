@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "generation": "人工编写的虚构业务总结；不是模型生成结果。引文在导入时与原始片段逐字核对。",
+  "pages": [
+    {
+      "slug": "sample-policy-version-guide",
+      "title": "跨年订单与售后日期（虚构·人工整理示例）",
+      "links": ["sample-quality-exchange-route"],
+      "claims": [
+        {"text":"政策版本由订单创建日期决定，不能因为咨询发生在新的一年就改用新版本。","sources":[{"source_key":"example:refund-2026","quote":"订单适用哪个版本以订单创建日期为准，不能以咨询日期判断。"}]},
+        {"text":"2025 版质量问题换货窗口为签收后 7 个自然日；2026 版延长至 15 个自然日。无理由退货窗口仍为 7 个自然日。","sources":[{"source_key":"example:refund-2025","quote":"商品质量问题可在签收后 7 个自然日内申请换货"},{"source_key":"example:refund-2026","quote":"相比 2025 版，质量问题换货窗口由 7 个自然日延长至 15 个自然日，无理由退货窗口没有变化。"}]},
+        {"text":"拆分发货时，需要定位申请所对应的商品行与包裹，再使用该商品的签收证据。","sources":[{"source_key":"example:order-lifecycle","quote":"拆分发货时，同一订单各商品的签收日期可能不同，必须定位本次申请对应的商品行与包裹"}]},
+        {"text":"补开发票不改变原订单创建日期，也不重置签收、换货或保修窗口。","sources":[{"source_key":"example:invoice","quote":"补开发票不会改变订单创建日期，也不会重置签收、换货或保修窗口。"}]}
+      ]
+    },
+    {
+      "slug": "sample-quality-exchange-route",
+      "title": "质量换货的取证与交接（虚构·人工整理示例）",
+      "links": ["sample-policy-version-guide", "sample-device-support"],
+      "claims": [
+        {"text":"质量问题已核实后，仍要核对订单适用的换货窗口；“有故障”不代表任意时间均可换新。","sources":[{"source_key":"example:quality-inspection","quote":"确认质量问题后，仍需核对订单适用的换货窗口，不能把“有故障”直接等同于“任意时间均可换新”。"}]},
+        {"text":"经核实的质量问题换货，商城承担回寄与再次寄出的标准配送运费。","sources":[{"source_key":"example:shipping","quote":"经核实的质量问题换货，由星舟商城承担回寄与再次寄出的标准配送运费。"}]},
+        {"text":"QF-NOT-REPRODUCED 只说明在记录条件下没有复现，不证明用户描述不实，也不证明商品绝对无问题。","sources":[{"source_key":"example:quality-inspection","quote":"QF-NOT-REPRODUCED 表示在已经记录的检查条件下未复现所报现象，不等于证明用户描述不实，也不自动等于商品绝对没有问题。"}]},
+        {"text":"仓库已收件仅说明物流交接发生，不等于质检通过、退款审核通过或换货寄出。","sources":[{"source_key":"example:reverse-logistics","quote":"接收状态为“仓库已收到”只证明物流交接发生，不等于质检通过、退款审核通过或换货已经寄出。"}]}
+      ]
+    },
+    {
+      "slug": "sample-promotion-refund",
+      "title": "组合优惠与部分退款（虚构·人工整理示例）",
+      "links": ["sample-policy-version-guide"],
+      "claims": [
+        {"text":"虚构秋季组合券门槛为参与商品原价合计 260.00 元，券面额 40.00 元；每单最多一张，不能与其他商品券叠加。","sources":[{"source_key":"example:campaign-autumn","quote":"参与商品原价合计满 260.00 元，可使用一张面额 40.00 元的秋季组合券。每单最多使用一张，不与其他商品券叠加。"}]},
+        {"text":"在原价 160.00 元阅读灯与 100.00 元风扇的算例中，实付分别为 135.38 元与 84.62 元，商品实付合计 220.00 元。","sources":[{"source_key":"example:promotion-refund","quote":"阅读灯原价 160.00 元、优惠 24.62 元、实付 135.38 元；风扇原价 100.00 元、优惠 15.38 元、实付 84.62 元。"},{"source_key":"example:campaign-autumn","quote":"使用券后商品实付 220.00 元。"}]},
+        {"text":"风扇符合退货条件且没有历史退款时，算例商品现金退款按实付 84.62 元计算，不按原价 100.00 元计算。","sources":[{"source_key":"example:promotion-refund","quote":"若风扇符合适用退货条件，且没有历史退款，商品现金退款按该行实付 84.62 元计算，不按标价 100.00 元退款"}]},
+        {"text":"整单参与商品全部完成退款后可按活动规则恢复原券；部分退款不恢复整张券，恢复也不自动延长有效期。","sources":[{"source_key":"example:campaign-autumn","quote":"整单参与商品全部完成退款后，可恢复符合规则的原组合券；部分退款不恢复整张券。恢复券沿用原有效期，不自动延期。"}]}
+      ]
+    },
+    {
+      "slug": "sample-device-support",
+      "title": "设备规格与保障边界（虚构·人工整理示例）",
+      "links": ["sample-quality-exchange-route"],
+      "claims": [
+        {"text":"阅读灯 L1 不带定时自动关闭；L2 提供五档亮度和三十分钟自动关闭。不能把 L2 的功能套给 L1。","sources":[{"source_key":"example:product-reading-light","quote":"L2 为带底座触控区的阅读灯，提供五个亮度档位和三十分钟自动关闭功能。L1 没有定时自动关闭功能"}]},
+        {"text":"阅读灯正常使用中的电路故障属于整机保修范围，保障期为自签收日起 12 个月；人为摔坏、进水和未经授权拆机造成的损坏不在免费范围。","sources":[{"source_key":"example:warranty","quote":"星舟阅读灯享有自签收日起 12 个月的整机保修。保修范围包括正常使用中发生的电路故障。"},{"source_key":"example:warranty","quote":"人为摔坏、进水和未经授权拆机造成的损坏不属于免费保修范围。"}]},
+        {"text":"F2 的虚构整机保障期是自签收日起六个月，覆盖正常使用的电机或电路故障，不能直接套用阅读灯十二个月规则。","sources":[{"source_key":"example:product-desk-fan","quote":"本虚构样例规定 F2 自签收日起享有六个月的整机保修，覆盖正常使用中发生的电机或电路故障"},{"source_key":"example:product-desk-fan","quote":"F2 的六个月保障不能替代阅读灯的十二个月规则。"}]},
+        {"text":"会员等级不改变退货、质量换货或保修条件，也不自动提供免费回寄运费。","sources":[{"source_key":"example:membership","quote":"会员等级不改变无理由退货、质量换货或设备保修的条件，也不自动提供免费回寄运费。"}]}
+      ]
+    }
+  ]
+}

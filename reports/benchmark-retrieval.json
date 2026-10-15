@@ -1,0 +1,1763 @@
+{
+  "schema_version": 1,
+  "benchmark_run_id": "benchmark_31cabeb89b57453faa8c315103cb8d11",
+  "generated_at": "2026-09-09T02:04:56.744350+00:00",
+  "execution_mode": "retrieval_only",
+  "live_authorized": false,
+  "dataset": {
+    "dataset_id": "mist-ops-original-v1",
+    "split": "all",
+    "fictional": true,
+    "authoring": "Original synthetic corpus and labels authored for this project; no third-party blind evaluation.",
+    "document_count": 8,
+    "case_count": 24,
+    "corpus_sha256": "ed61ff390a7fb9ec83f36c541ed90ebaa5a65d20741bd2b4e40088db17a04f02",
+    "questions_sha256": "42c5d188b7172a94b79769352a4de8951d445fb208fcea50280ce040e56fc2f6",
+    "manifest_sha256": "552bac0edb71e5a1b82305eee97f288287534bbd41d583ca92ac778c27c7b894",
+    "corpus_files": [
+      {
+        "file": "corpus/access.md",
+        "sha256": "ebc56c64abefddcaffd108e2c2646d74ab56c189dfbe8f9c1ebfe95a44a8c10a",
+        "source_key": "benchmark:access"
+      },
+      {
+        "file": "corpus/queue.md",
+        "sha256": "feb5c014bd70b11f24782af4c0c92a9ee1a52e791bdb8a407038a07e77a02511",
+        "source_key": "benchmark:queue"
+      },
+      {
+        "file": "corpus/retries.md",
+        "sha256": "bdd492cdd146dfda7be710d080bea7ce8ab299865703b1c5130f5dcbab8d9bec",
+        "source_key": "benchmark:retries"
+      },
+      {
+        "file": "corpus/artifacts.md",
+        "sha256": "e683b34821a18a18c47a91272d50d2aafd48f2f3e4a5a1522c58dff6d8a57bd1",
+        "source_key": "benchmark:artifacts"
+      },
+      {
+        "file": "corpus/releases.md",
+        "sha256": "0d464b2b10f068da84e04120894de5f46b3ac65ee5d8698cb5004d90179139bb",
+        "source_key": "benchmark:releases"
+      },
+      {
+        "file": "corpus/incidents.md",
+        "sha256": "ad7e2193f06d994af1e34e8441ed711c8662983e2eaf6bcb0cf1eb3fad2d27c2",
+        "source_key": "benchmark:incidents"
+      },
+      {
+        "file": "corpus/maintenance.md",
+        "sha256": "030665ff46bec4e9738092954e530fce4aa70401d7dadc612b39f5d87a36fded",
+        "source_key": "benchmark:maintenance"
+      },
+      {
+        "file": "corpus/audit-export.md",
+        "sha256": "0a7e93c24a111558a10b059c3def97fec8ea2e164d435a726ac69e72fcc676cc",
+        "source_key": "benchmark:audit-export"
+      }
+    ],
+    "question_files": [
+      {
+        "file": "questions/dev.json",
+        "sha256": "e04b913e2c86cd346fab2c5201f094a325fcf5c288b734f38f7d25803c6fe679"
+      },
+      {
+        "file": "questions/holdout.json",
+        "sha256": "6aa5ac663f475e88fa6dc314367a5b370e27783e232685af871d7f65bf665794"
+      }
+    ]
+  },
+  "settings_snapshot": {
+    "provider": "offline",
+    "model": "",
+    "max_rounds": 6,
+    "max_tool_calls": 12,
+    "timeout_seconds": 60.0,
+    "request_timeout_seconds": 20.0,
+    "max_context_chars": 24000,
+    "max_total_tokens": 24000,
+    "max_output_tokens": 1500,
+    "requested_provider": "offline",
+    "endpoint_scheme": null,
+    "endpoint_host": null,
+    "endpoint_port": null,
+    "sampling_parameters": "not_overridden_by_adapter; provider defaults apply"
+  },
+  "implementation": {
+    "python": "3.13.14",
+    "platform": "Windows",
+    "files": [
+      {
+        "file": "zhiwiki/benchmarks.py",
+        "sha256": "55fa48dd99a116b6272f22779d159b3f3df756b00b7da57a4bd4ae9a3fb1f112"
+      },
+      {
+        "file": "zhiwiki/engine.py",
+        "sha256": "0fc6c13e3e4ff60ff56b5057ed9ac20371fac67998616f488b57326888337be2"
+      },
+      {
+        "file": "zhiwiki/provider.py",
+        "sha256": "ab061fd677f925b0c95f79e6dc0954d991a793ec1894a7bc3246c7ff348ca483"
+      },
+      {
+        "file": "zhiwiki/retrieval.py",
+        "sha256": "7dbdbed713649db2569de4e37aaf92ce107315f9be663c2dee92df2aaed2ba54"
+      },
+      {
+        "file": "zhiwiki/chunking.py",
+        "sha256": "3c3e7b9dea08e3eb18f4da67184f2a4ecea796623e1a86db72b576345fe85d0c"
+      },
+      {
+        "file": "zhiwiki/store.py",
+        "sha256": "f1b5fe46392cca44b4a4e45630b380732b7b7239167678f6e60432fd2c7251d5"
+      }
+    ]
+  },
+  "protocol": {
+    "k": 5,
+    "candidate_chunk_limit": 20,
+    "qrels_unit": "unique_document",
+    "unlisted_qrel_grade": 0,
+    "pair_order": "adjacent AB/BA alternating",
+    "anonymization_seed": 1729,
+    "rating_dimensions": [
+      "correctness",
+      "groundedness",
+      "completeness"
+    ],
+    "rating_scale": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "judge_model_used": false
+  },
+  "retrieval": [
+    {
+      "case_id": "dev-access",
+      "split": "dev",
+      "question": "雾岚观察员可以取消任务吗？管理员能看到成员密钥明文吗？",
+      "qrels": {
+        "benchmark:access": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:access",
+          "rank": 1,
+          "score": 32.46737322,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 2,
+          "score": 14.99550253,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 3,
+          "score": 11.19700378,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 4,
+          "score": 8.77617691,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 6.1914145,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 5.559,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-queue",
+      "split": "dev",
+      "question": "一个雾岚工作区有多少个普通运行槽位？排队中的任务占槽位吗？",
+      "qrels": {
+        "benchmark:queue": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:queue",
+          "rank": 1,
+          "score": 30.83203815,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 2,
+          "score": 14.0954994,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 3,
+          "score": 8.34202827,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 4,
+          "score": 8.31877477,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 5,
+          "score": 7.71021396,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 3.842,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-retry",
+      "split": "dev",
+      "question": "TEMP_WORKER_LOST 自动重试几次，间隔是多少，任务编号会改变吗？",
+      "qrels": {
+        "benchmark:retries": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:retries",
+          "rank": 1,
+          "score": 24.5424528,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 8.08173849,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 7.61115992,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 4,
+          "score": 7.02585507,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 5,
+          "score": 6.17186481,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.558,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-artifact",
+      "split": "dev",
+      "question": "雾岚成功任务产物和失败任务排错附件分别保留多久，从什么时候开始？",
+      "qrels": {
+        "benchmark:artifacts": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 1,
+          "score": 25.49396011,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 2,
+          "score": 16.73219061,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 3,
+          "score": 12.10164575,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 4,
+          "score": 9.25736576,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 5,
+          "score": 9.14873134,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.259,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-release",
+      "split": "dev",
+      "question": "雾岚配置发布需要谁提交与复核，已排队任务会改用新配置吗？",
+      "qrels": {
+        "benchmark:releases": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:releases",
+          "rank": 1,
+          "score": 26.05984535,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 2,
+          "score": 11.95501618,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 3,
+          "score": 11.37962119,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 4,
+          "score": 9.50237176,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 5,
+          "score": 7.36403406,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.458,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-incident",
+      "split": "dev",
+      "question": "I1 的十五分钟目标从何时起算，是保证十五分钟解决吗？",
+      "qrels": {
+        "benchmark:incidents": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 1,
+          "score": 21.88881358,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 2,
+          "score": 10.6617344,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 7.00041348,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 4,
+          "score": 6.98358334,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 5,
+          "score": 5.39244167,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.745,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-maintenance",
+      "split": "dev",
+      "question": "雾岚例行维护在什么时间，已有运行任务与排队任务分别怎样处理？",
+      "qrels": {
+        "benchmark:maintenance": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 1,
+          "score": 38.95345682,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 13.16485115,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 3,
+          "score": 11.35200015,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 4,
+          "score": 7.91493473,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 5,
+          "score": 6.30890521,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 4.94,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-audit",
+      "split": "dev",
+      "question": "雾岚批量审计导出由谁申请和审批，生成文件保留多久？",
+      "qrels": {
+        "benchmark:audit-export": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 1,
+          "score": 49.45843365,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 2,
+          "score": 15.91053595,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 8.08192138,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 4,
+          "score": 7.51281876,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 5.51437057,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.923,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-download",
+      "split": "dev",
+      "question": "雾岚观察员拿到了尚未过期的签名链接，就可以下载受限产物吗？",
+      "qrels": {
+        "benchmark:access": 2,
+        "benchmark:artifacts": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 1,
+          "score": 40.61923316,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 2,
+          "score": 25.85434867,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 3,
+          "score": 19.23766951,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 4,
+          "score": 9.56012589,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 5,
+          "score": 6.15192337,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.739,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-cancel-slot",
+      "split": "dev",
+      "question": "运行任务取消请求已接收后，雾岚槽位会立即释放并自动重试吗？",
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:retries": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:queue",
+          "rank": 1,
+          "score": 34.87487235,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 2,
+          "score": 22.11860993,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 13.00535703,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 4,
+          "score": 11.46316106,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 9.63854537,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.812,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-retention",
+      "split": "dev",
+      "question": "雾岚审计事件保留三十天，是否意味着成功任务产物也能下载三十天？",
+      "qrels": {
+        "benchmark:audit-export": 2,
+        "benchmark:artifacts": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 1,
+          "score": 38.48441218,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 2,
+          "score": 19.70549223,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 12.21560973,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 4,
+          "score": 10.68906885,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 5,
+          "score": 8.47198967,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.553,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "dev-unknown",
+      "split": "dev",
+      "question": "雾岚平台采用 ZEPHYR_X9 容灾协议时的具体复制算法是什么？",
+      "qrels": {},
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 1,
+          "score": 8.34983368,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 2,
+          "score": 5.35156998,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 3,
+          "score": 4.56077135,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 4,
+          "score": 4.42045902,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 5,
+          "score": 3.96718464,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": null,
+        "mrr_at_k": null,
+        "ndcg_at_k": null
+      },
+      "elapsed_ms": 2.725,
+      "failure": null,
+      "expect_abstain": true,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-project-quota",
+      "split": "holdout",
+      "question": "雾岚同一工作区建两个项目，是否就有六个同时运行槽位？",
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:access": 1
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:queue",
+          "rank": 1,
+          "score": 31.63146566,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 2,
+          "score": 16.36962722,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 9.37199772,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 4,
+          "score": 7.8964834,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 7.03338477,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 0.9639404333166532
+      },
+      "elapsed_ms": 4.674,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-queue-full",
+      "split": "holdout",
+      "question": "提交返回 QUEUE_FULL 后，雾岚会先建一个隐藏任务等待有额度吗？",
+      "qrels": {
+        "benchmark:queue": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:queue",
+          "rank": 1,
+          "score": 24.68238656,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 2,
+          "score": 10.49388111,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 3,
+          "score": 10.42532698,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 4,
+          "score": 7.96159224,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 5.71457223,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.852,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-schema",
+      "split": "holdout",
+      "question": "INPUT_SCHEMA_INVALID 可以等平台自动重试修好吗？",
+      "qrels": {
+        "benchmark:retries": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:retries",
+          "rank": 1,
+          "score": 16.42174899,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 7.72317402,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 6.43134769,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 4,
+          "score": 3.11070315,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 2.6642416,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 3.146,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-idempotency",
+      "split": "holdout",
+      "question": "提交结果未知时应如何使用 client_request_id？相同标识但输入改变会怎样？",
+      "qrels": {
+        "benchmark:retries": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:retries",
+          "rank": 1,
+          "score": 41.47821333,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 2,
+          "score": 14.08990608,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 3,
+          "score": 10.14044392,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 4,
+          "score": 9.03080179,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 5,
+          "score": 7.29065197,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 3.013,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-refresh-link",
+      "split": "holdout",
+      "question": "雾岚成功产物已经存在七十小时，重新生成十五分钟链接会延长七十二小时保留期吗？",
+      "qrels": {
+        "benchmark:artifacts": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 1,
+          "score": 43.8717335,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 2,
+          "score": 22.12021617,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 3,
+          "score": 14.12392551,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 4,
+          "score": 13.25529582,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 5,
+          "score": 12.6026816,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.812,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-rollback-queue",
+      "split": "holdout",
+      "question": "正式配置回退后，雾岚已经排队的任务是否自动使用历史配置？要改变它应怎样处理？",
+      "qrels": {
+        "benchmark:releases": 2,
+        "benchmark:queue": 1
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:releases",
+          "rank": 1,
+          "score": 46.13354569,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 19.68838878,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 3,
+          "score": 15.66222236,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 4,
+          "score": 15.15239588,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 5,
+          "score": 9.11163576,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.786,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-incident-recovery",
+      "split": "holdout",
+      "question": "部分雾岚任务失败但其他仍可运行属于哪级事件，告警消失就能宣布恢复吗？",
+      "qrels": {
+        "benchmark:incidents": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 1,
+          "score": 48.14851464,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 2,
+          "score": 9.44704751,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 3,
+          "score": 9.40664283,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 4,
+          "score": 7.47631031,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 5,
+          "score": 7.21718133,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 2.713,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-maintenance-retry",
+      "split": "holdout",
+      "question": "收到 MAINTENANCE_HOLD 和单纯网络超时的提交请求，都能直接换个新标识重发吗？",
+      "qrels": {
+        "benchmark:maintenance": 2,
+        "benchmark:retries": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:retries",
+          "rank": 1,
+          "score": 25.16895575,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 16.10322428,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 3,
+          "score": 11.62534385,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 4,
+          "score": 11.09332287,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 5,
+          "score": 8.85423964,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 0.9197207891481876
+      },
+      "elapsed_ms": 2.725,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-runtime-clock",
+      "split": "holdout",
+      "question": "雾岚任务排队了十分钟后开始运行，十八分钟运行上限只剩八分钟吗？维护会重置上限吗？",
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:maintenance": 2
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:maintenance",
+          "rank": 1,
+          "score": 30.49572324,
+          "evidence_id": "chunk_f44e4f14c6b64ad88da6cda8b92735bd"
+        },
+        {
+          "source_key": "benchmark:queue",
+          "rank": 2,
+          "score": 24.34951234,
+          "evidence_id": "chunk_05e6f7db911f450aa4094b8234310f39"
+        },
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 3,
+          "score": 10.90515132,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 4,
+          "score": 10.64883458,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 5,
+          "score": 8.67004062,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "elapsed_ms": 5.516,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-export-ready",
+      "split": "holdout",
+      "question": "雾岚审计导出审批通过后就是可下载了吗，操作员可代替管理员自助申请吗？",
+      "qrels": {
+        "benchmark:audit-export": 2,
+        "benchmark:access": 1
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 1,
+          "score": 48.45918114,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 2,
+          "score": 19.14736649,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 3,
+          "score": 17.91445471,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:releases",
+          "rank": 4,
+          "score": 9.25535711,
+          "evidence_id": "chunk_6effd9f99e8d43de9072e836157cf8c2"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 5,
+          "score": 7.97925791,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 0.9639404333166532
+      },
+      "elapsed_ms": 11.406,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-support-secrets",
+      "split": "holdout",
+      "question": "调查雾岚下载失败与 I1 事件时，支持人员应收完整签名链接和临时凭据作证据吗？",
+      "qrels": {
+        "benchmark:artifacts": 2,
+        "benchmark:incidents": 2,
+        "benchmark:access": 1
+      },
+      "ranked_sources": [
+        {
+          "source_key": "benchmark:incidents",
+          "rank": 1,
+          "score": 29.38130657,
+          "evidence_id": "chunk_f3cb9046684a4af790570997533138ea"
+        },
+        {
+          "source_key": "benchmark:artifacts",
+          "rank": 2,
+          "score": 28.309969,
+          "evidence_id": "chunk_651f2318b699479dbb7805f2c7effa82"
+        },
+        {
+          "source_key": "benchmark:audit-export",
+          "rank": 3,
+          "score": 26.13635667,
+          "evidence_id": "chunk_888e04c677fb494799bc9007b55c4d0a"
+        },
+        {
+          "source_key": "benchmark:access",
+          "rank": 4,
+          "score": 24.31485247,
+          "evidence_id": "chunk_3d54ec474f4545bd8ae5ccd4734d551e"
+        },
+        {
+          "source_key": "benchmark:retries",
+          "rank": 5,
+          "score": 12.26874379,
+          "evidence_id": "chunk_21bf3140f3704d5da187d9038bbc8988"
+        }
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 0.9871451602176229
+      },
+      "elapsed_ms": 3.039,
+      "failure": null,
+      "expect_abstain": false,
+      "empty_result": false
+    },
+    {
+      "case_id": "holdout-unknown",
+      "split": "holdout",
+      "question": "QXORM_782 量子纠缠设备的钙钛矿吸收峰是多少？",
+      "qrels": {},
+      "ranked_sources": [],
+      "metrics": {
+        "recall_at_k": null,
+        "mrr_at_k": null,
+        "ndcg_at_k": null
+      },
+      "elapsed_ms": 2.561,
+      "failure": null,
+      "expect_abstain": true,
+      "empty_result": true
+    }
+  ],
+  "runs": [],
+  "references": [
+    {
+      "id": "dev-access",
+      "split": "dev",
+      "question": "雾岚观察员可以取消任务吗？管理员能看到成员密钥明文吗？",
+      "reference_answer": "观察员不能取消任务；管理员也不能查看他人密钥明文。",
+      "key_points": [
+        "观察员只可查看状态和脱敏日志",
+        "取消任务需要操作员或相应更高权限",
+        "管理员不能查看密钥明文"
+      ],
+      "qrels": {
+        "benchmark:access": 2
+      }
+    },
+    {
+      "id": "dev-queue",
+      "split": "dev",
+      "question": "一个雾岚工作区有多少个普通运行槽位？排队中的任务占槽位吗？",
+      "reference_answer": "每个工作区有三个普通运行槽位，排队任务不占运行槽位。",
+      "key_points": [
+        "三个同时运行槽位",
+        "排队不占槽位"
+      ],
+      "qrels": {
+        "benchmark:queue": 2
+      }
+    },
+    {
+      "id": "dev-retry",
+      "split": "dev",
+      "question": "TEMP_WORKER_LOST 自动重试几次，间隔是多少，任务编号会改变吗？",
+      "reference_answer": "最多自动重试两次，间隔依次三十秒和九十秒；沿用任务编号，attempt_no 不同。",
+      "key_points": [
+        "最多两次",
+        "三十秒和九十秒",
+        "任务编号不变但尝试编号改变"
+      ],
+      "qrels": {
+        "benchmark:retries": 2
+      }
+    },
+    {
+      "id": "dev-artifact",
+      "split": "dev",
+      "question": "雾岚成功任务产物和失败任务排错附件分别保留多久，从什么时候开始？",
+      "reference_answer": "普通成功任务产物从成功终态起保留七十二小时，失败排错附件从失败终态起保留二十四小时。",
+      "key_points": [
+        "成功七十二小时",
+        "失败附件二十四小时",
+        "从对应终态计算"
+      ],
+      "qrels": {
+        "benchmark:artifacts": 2
+      }
+    },
+    {
+      "id": "dev-release",
+      "split": "dev",
+      "question": "雾岚配置发布需要谁提交与复核，已排队任务会改用新配置吗？",
+      "reference_answer": "需两名不同管理员分别提交和复核；任务使用被接收时的配置快照，已排队任务不会因新发布而切换。",
+      "key_points": [
+        "两名不同管理员",
+        "提交人不能自审",
+        "排队任务保留接收时快照"
+      ],
+      "qrels": {
+        "benchmark:releases": 2
+      }
+    },
+    {
+      "id": "dev-incident",
+      "split": "dev",
+      "question": "I1 的十五分钟目标从何时起算，是保证十五分钟解决吗？",
+      "reference_answer": "从值班队列确认接收事件开始计算，仅指首次人工响应目标，不保证解决时间。",
+      "key_points": [
+        "确认接收为起点",
+        "十五分钟首次响应",
+        "不是解决保证"
+      ],
+      "qrels": {
+        "benchmark:incidents": 2
+      }
+    },
+    {
+      "id": "dev-maintenance",
+      "split": "dev",
+      "question": "雾岚例行维护在什么时间，已有运行任务与排队任务分别怎样处理？",
+      "reference_answer": "每周三北京时间22:00至22:20；运行任务继续，排队任务暂不调度，并暂停新任务接收。",
+      "key_points": [
+        "周三北京时间22:00–22:20",
+        "运行继续",
+        "排队暂停调度且新接收暂停"
+      ],
+      "qrels": {
+        "benchmark:maintenance": 2
+      }
+    },
+    {
+      "id": "dev-audit",
+      "split": "dev",
+      "question": "雾岚批量审计导出由谁申请和审批，生成文件保留多久？",
+      "reference_answer": "管理员申请，由另一名管理员审批；生成后的导出文件保留四十八小时。",
+      "key_points": [
+        "管理员申请",
+        "另一管理员审批不得自审",
+        "四十八小时"
+      ],
+      "qrels": {
+        "benchmark:audit-export": 2
+      }
+    },
+    {
+      "id": "dev-download",
+      "split": "dev",
+      "question": "雾岚观察员拿到了尚未过期的签名链接，就可以下载受限产物吗？",
+      "reference_answer": "不可以。签名链接仍受工作区权限和产物保留状态约束，观察员没有受限产物下载权。",
+      "key_points": [
+        "链接未过期不替代权限",
+        "观察员不能下载受限产物",
+        "还要检查产物保留状态"
+      ],
+      "qrels": {
+        "benchmark:access": 2,
+        "benchmark:artifacts": 2
+      }
+    },
+    {
+      "id": "dev-cancel-slot",
+      "split": "dev",
+      "question": "运行任务取消请求已接收后，雾岚槽位会立即释放并自动重试吗？",
+      "reference_answer": "不会立即释放，工作进程确认停止后才释放；已取消任务不会自动恢复或重试。",
+      "key_points": [
+        "先终止处理中",
+        "确认停止后释放",
+        "取消不自动恢复"
+      ],
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:retries": 2
+      }
+    },
+    {
+      "id": "dev-retention",
+      "split": "dev",
+      "question": "雾岚审计事件保留三十天，是否意味着成功任务产物也能下载三十天？",
+      "reference_answer": "不意味着。审计事件是三十天，普通成功任务产物从成功终态起保留七十二小时。",
+      "key_points": [
+        "区分审计与产物",
+        "审计三十天",
+        "成功产物七十二小时"
+      ],
+      "qrels": {
+        "benchmark:audit-export": 2,
+        "benchmark:artifacts": 2
+      }
+    },
+    {
+      "id": "dev-unknown",
+      "split": "dev",
+      "question": "雾岚平台采用 ZEPHYR_X9 容灾协议时的具体复制算法是什么？",
+      "reference_answer": "资料没有给出 ZEPHYR_X9 容灾协议或复制算法，无法确认。",
+      "key_points": [
+        "明确资料不足",
+        "不编造算法"
+      ],
+      "qrels": {}
+    },
+    {
+      "id": "holdout-project-quota",
+      "split": "holdout",
+      "question": "雾岚同一工作区建两个项目，是否就有六个同时运行槽位？",
+      "reference_answer": "不是。项目共享工作区三个普通运行槽位，创建新项目不会新增额度。",
+      "key_points": [
+        "配额单位是工作区",
+        "项目共享三个槽位",
+        "不是六个"
+      ],
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:access": 1
+      }
+    },
+    {
+      "id": "holdout-queue-full",
+      "split": "holdout",
+      "question": "提交返回 QUEUE_FULL 后，雾岚会先建一个隐藏任务等待有额度吗？",
+      "reference_answer": "不会。工作区排队最多二十个，超限拒收且不创建隐藏任务，应先查任务列表再决定稍后提交。",
+      "key_points": [
+        "最多二十个排队",
+        "不建隐藏任务",
+        "先读取任务列表"
+      ],
+      "qrels": {
+        "benchmark:queue": 2
+      }
+    },
+    {
+      "id": "holdout-schema",
+      "split": "holdout",
+      "question": "INPUT_SCHEMA_INVALID 可以等平台自动重试修好吗？",
+      "reference_answer": "不能。输入结构错误不自动重试，需修改输入后重新提交。",
+      "key_points": [
+        "不自动重试",
+        "修改输入",
+        "重新提交"
+      ],
+      "qrels": {
+        "benchmark:retries": 2
+      }
+    },
+    {
+      "id": "holdout-idempotency",
+      "split": "holdout",
+      "question": "提交结果未知时应如何使用 client_request_id？相同标识但输入改变会怎样？",
+      "reference_answer": "先查询相同标识；二十四小时窗口内相同输入重发返回原任务，相同标识而输入不同返回 REQUEST_CONFLICT。",
+      "key_points": [
+        "先查询已有结果",
+        "同工作区二十四小时",
+        "相同输入原任务",
+        "不同输入冲突"
+      ],
+      "qrels": {
+        "benchmark:retries": 2
+      }
+    },
+    {
+      "id": "holdout-refresh-link",
+      "split": "holdout",
+      "question": "雾岚成功产物已经存在七十小时，重新生成十五分钟链接会延长七十二小时保留期吗？",
+      "reference_answer": "不会。新链接只改变链接有效期，产物仍从成功终态起计算七十二小时。",
+      "key_points": [
+        "生成链接不延长产物期",
+        "链接十五分钟",
+        "保留期从成功终态起算"
+      ],
+      "qrels": {
+        "benchmark:artifacts": 2
+      }
+    },
+    {
+      "id": "holdout-rollback-queue",
+      "split": "holdout",
+      "question": "正式配置回退后，雾岚已经排队的任务是否自动使用历史配置？要改变它应怎样处理？",
+      "reference_answer": "不会。回退产生新发布编号，只影响之后接收的任务；旧任务需按授权取消并重新创建。",
+      "key_points": [
+        "回退新发布编号",
+        "旧排队快照不变",
+        "授权取消后新建"
+      ],
+      "qrels": {
+        "benchmark:releases": 2,
+        "benchmark:queue": 1
+      }
+    },
+    {
+      "id": "holdout-incident-recovery",
+      "split": "holdout",
+      "question": "部分雾岚任务失败但其他仍可运行属于哪级事件，告警消失就能宣布恢复吗？",
+      "reference_answer": "属于 I2；告警消失不足以宣布恢复，需要新的任务执行证据。",
+      "key_points": [
+        "I2",
+        "告警消失不足",
+        "新任务执行证据"
+      ],
+      "qrels": {
+        "benchmark:incidents": 2
+      }
+    },
+    {
+      "id": "holdout-maintenance-retry",
+      "split": "holdout",
+      "question": "收到 MAINTENANCE_HOLD 和单纯网络超时的提交请求，都能直接换个新标识重发吗？",
+      "reference_answer": "不应直接换标识。明确维护拒收不产生新任务，维护后使用原标识核查重提；网络超时可能结果未知，先按幂等规则查询。",
+      "key_points": [
+        "维护拒收没有新编号",
+        "使用原client_request_id",
+        "超时结果未知先查询"
+      ],
+      "qrels": {
+        "benchmark:maintenance": 2,
+        "benchmark:retries": 2
+      }
+    },
+    {
+      "id": "holdout-runtime-clock",
+      "split": "holdout",
+      "question": "雾岚任务排队了十分钟后开始运行，十八分钟运行上限只剩八分钟吗？维护会重置上限吗？",
+      "reference_answer": "不是，十八分钟从实际运行开始，不包括排队；维护中仍运行的任务不自动获得额外窗口。",
+      "key_points": [
+        "排队不计运行上限",
+        "仍有完整单次十八分钟",
+        "维护不自动重置"
+      ],
+      "qrels": {
+        "benchmark:queue": 2,
+        "benchmark:maintenance": 2
+      }
+    },
+    {
+      "id": "holdout-export-ready",
+      "split": "holdout",
+      "question": "雾岚审计导出审批通过后就是可下载了吗，操作员可代替管理员自助申请吗？",
+      "reference_answer": "不是。审批后还有生成过程，需要状态可下载；批量导出限管理员申请并由另一管理员审批，操作员任务权限不能替代。",
+      "key_points": [
+        "审批不等于生成完成",
+        "管理员申请",
+        "另一管理员审批",
+        "操作员权限不足"
+      ],
+      "qrels": {
+        "benchmark:audit-export": 2,
+        "benchmark:access": 1
+      }
+    },
+    {
+      "id": "holdout-support-secrets",
+      "split": "holdout",
+      "question": "调查雾岚下载失败与 I1 事件时，支持人员应收完整签名链接和临时凭据作证据吗？",
+      "reference_answer": "不应收集这些秘密。收集工作区、请求或产物标识、脱敏错误码及相关事件信息即可。",
+      "key_points": [
+        "不收完整签名链接",
+        "不收临时凭据",
+        "使用标识和脱敏错误信息"
+      ],
+      "qrels": {
+        "benchmark:artifacts": 2,
+        "benchmark:incidents": 2,
+        "benchmark:access": 1
+      }
+    },
+    {
+      "id": "holdout-unknown",
+      "split": "holdout",
+      "question": "QXORM_782 量子纠缠设备的钙钛矿吸收峰是多少？",
+      "reference_answer": "该问题超出雾岚平台虚构资料范围，没有对应设备或数值依据。",
+      "key_points": [
+        "超出资料范围",
+        "不编造吸收峰"
+      ],
+      "qrels": {}
+    }
+  ],
+  "limitations": [
+    "Original synthetic data; held-out split is not a third-party blind test",
+    "Document relevance metrics are separate from answer quality",
+    "No automatic correctness/groundedness/completeness score",
+    "Offline paired outputs test plumbing, not model improvement",
+    "One run per arm; no statistical significance or production cost claims"
+  ],
+  "summary": {
+    "retrieval": {
+      "recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "ndcg_at_k": 0.9924884916363235
+    },
+    "retrieval_cases": 24,
+    "relevance_scored_cases": 22,
+    "retrieval_failures": 0,
+    "empty_result_expected_cases": 2,
+    "empty_result_expected_passes": 1,
+    "answers": {
+      "baseline": {
+        "runs": 0,
+        "statuses": {},
+        "mean_elapsed_ms": null,
+        "failed_runs": 0,
+        "model_calls": 0,
+        "actual_total_tokens": null,
+        "human_review": {
+          "correctness": null,
+          "groundedness": null,
+          "completeness": null
+        }
+      },
+      "agentic": {
+        "runs": 0,
+        "statuses": {},
+        "mean_elapsed_ms": null,
+        "failed_runs": 0,
+        "model_calls": 0,
+        "actual_total_tokens": null,
+        "human_review": {
+          "correctness": null,
+          "groundedness": null,
+          "completeness": null
+        }
+      }
+    }
+  },
+  "summary_by_split": {
+    "dev": {
+      "retrieval": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 1.0
+      },
+      "retrieval_cases": 12,
+      "relevance_scored_cases": 11,
+      "retrieval_failures": 0,
+      "empty_result_expected_cases": 1,
+      "empty_result_expected_passes": 0,
+      "answers": {
+        "baseline": {
+          "runs": 0,
+          "statuses": {},
+          "mean_elapsed_ms": null,
+          "failed_runs": 0,
+          "model_calls": 0,
+          "actual_total_tokens": null,
+          "human_review": {
+            "correctness": null,
+            "groundedness": null,
+            "completeness": null
+          }
+        },
+        "agentic": {
+          "runs": 0,
+          "statuses": {},
+          "mean_elapsed_ms": null,
+          "failed_runs": 0,
+          "model_calls": 0,
+          "actual_total_tokens": null,
+          "human_review": {
+            "correctness": null,
+            "groundedness": null,
+            "completeness": null
+          }
+        }
+      }
+    },
+    "holdout": {
+      "retrieval": {
+        "recall_at_k": 1.0,
+        "mrr_at_k": 1.0,
+        "ndcg_at_k": 0.984976983272647
+      },
+      "retrieval_cases": 12,
+      "relevance_scored_cases": 11,
+      "retrieval_failures": 0,
+      "empty_result_expected_cases": 1,
+      "empty_result_expected_passes": 1,
+      "answers": {
+        "baseline": {
+          "runs": 0,
+          "statuses": {},
+          "mean_elapsed_ms": null,
+          "failed_runs": 0,
+          "model_calls": 0,
+          "actual_total_tokens": null,
+          "human_review": {
+            "correctness": null,
+            "groundedness": null,
+            "completeness": null
+          }
+        },
+        "agentic": {
+          "runs": 0,
+          "statuses": {},
+          "mean_elapsed_ms": null,
+          "failed_runs": 0,
+          "model_calls": 0,
+          "actual_total_tokens": null,
+          "human_review": {
+            "correctness": null,
+            "groundedness": null,
+            "completeness": null
+          }
+        }
+      }
+    }
+  }
+}

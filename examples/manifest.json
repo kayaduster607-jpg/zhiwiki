@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "description": "星舟商城虚构运营知识集；不对应真实商家、交易、法规或检测结果。只按固定清单显式导入。",
+  "documents": [
+    {"file":"documents/refund-2025.md","source_key":"example:refund-2025","title":"星舟商城售后政策 · 2025 版（虚构验收资料）","category":"售后政策","updated_date":"2025-01-01","fictional":true,"summary":"2025 年订单的无理由退货、质量换货窗口及订单日期依据；与 2026 版为两个独立业务来源。"},
+    {"file":"documents/refund-2026.md","source_key":"example:refund-2026","title":"星舟商城售后政策 · 2026 版（虚构验收资料）","category":"售后政策","updated_date":"2026-01-01","fictional":true,"summary":"2026 年订单质量换货延长至十五日；保留七日无理由退货与定制商品边界。"},
+    {"file":"documents/shipping.md","source_key":"example:shipping","title":"星舟商城运费与配送规范（虚构验收资料）","category":"物流与退款","updated_date":"2026-01-01","fictional":true,"summary":"普通首配 199 元免运费门槛、回寄责任、质量换货标准运费与审核后退款预计。"},
+    {"file":"documents/warranty.md","source_key":"example:warranty","title":"星舟商城设备保修规范（虚构验收资料）","category":"产品与保修","updated_date":"2026-01-01","fictional":true,"summary":"阅读灯十二个月整机保修、排除范围与申请材料；未披露信息需保留边界。"},
+    {"file":"documents/product-reading-light.md","source_key":"example:product-reading-light","title":"星舟阅读灯 L1 与 L2 产品资料（虚构产品手册）","category":"产品与保修","updated_date":"2026-09-01","fictional":true,"summary":"L1/L2 档位、定时差异、5V/2A 外部供电、包装和未提供的认证参数。"},
+    {"file":"documents/product-desk-fan.md","source_key":"example:product-desk-fan","title":"星舟桌面风扇 F2 产品资料（虚构产品手册）","category":"产品与保修","updated_date":"2026-09-01","fictional":true,"summary":"F2 三档风速、5V/1A 无电池供电、非联网功能与六个月保修样例。"},
+    {"file":"documents/order-lifecycle.md","source_key":"example:order-lifecycle","title":"星舟商城订单事件与售后时间线（虚构运营手册）","category":"订单与客服","updated_date":"2026-09-05","fictional":true,"summary":"长文：创建、签收、审核三种日期；跨年订单、拆分包裹、部分退款和证据冲突。"},
+    {"file":"documents/quality-inspection.md","source_key":"example:quality-inspection","title":"星舟商城质量问题取证与质检判定（虚构运营手册）","category":"质检与仓库","updated_date":"2026-09-05","fictional":true,"summary":"长文：故障现象与原因分离、QF 结论代码、首次质检目标、复检和保修分流。"},
+    {"file":"documents/reverse-logistics.md","source_key":"example:reverse-logistics","title":"星舟商城逆向物流与仓库交接（虚构运营手册）","category":"物流与退款","updated_date":"2026-09-05","fictional":true,"summary":"长文：RMA 授权、运费依据、序列号差异、换货出库条件和阶段时效。"},
+    {"file":"documents/promotion-refund.md","source_key":"example:promotion-refund","title":"星舟商城优惠分摊与活动退款手册（虚构运营手册）","category":"活动与会员","updated_date":"2026-09-05","fictional":true,"summary":"长文：260 减 40 的分摊、风扇实付 84.62 元、退券有效期、赠品与异常对账。"},
+    {"file":"documents/membership.md","source_key":"example:membership","title":"星舟商城会员权益与售后边界（虚构会员说明）","category":"活动与会员","updated_date":"2026-09-01","fictional":true,"summary":"积分与金星优先队列；会员不自动延长窗口、不自动免回寄运费。"},
+    {"file":"documents/refund-ledger.md","source_key":"example:refund-ledger","title":"星舟商城退款对账与支付状态（虚构运营说明）","category":"物流与退款","updated_date":"2026-09-03","fictional":true,"summary":"审核、渠道处理、完成四种状态；按商品行对账、重试防重复和隐私边界。"},
+    {"file":"documents/invoice.md","source_key":"example:invoice","title":"星舟商城开票与退款凭证（虚构运营说明）","category":"订单与客服","updated_date":"2026-09-03","fictional":true,"summary":"开票日期不改变订单日期；优惠和部分退款凭证需核对，不虚构税务规则。"},
+    {"file":"documents/service-escalation.md","source_key":"example:service-escalation","title":"星舟商城客服分流与证据交接（虚构运营说明）","category":"订单与客服","updated_date":"2026-09-05","fictional":true,"summary":"按订单、质检、物流、对账、活动缺口分流；区分当前有效 Wiki 与历史摘要。"},
+    {"file":"documents/packaging.md","source_key":"example:packaging","title":"星舟商城包装清单与收件验收（虚构仓库说明）","category":"质检与仓库","updated_date":"2026-09-02","fictional":true,"summary":"按型号核对包装，区分漏件、序列号与运输争议，不扩大退货条件。"},
+    {"file":"documents/campaign-autumn.md","source_key":"example:campaign-autumn","title":"星舟商城秋季组合活动说明（虚构活动快照）","category":"活动与会员","updated_date":"2026-09-01","fictional":true,"summary":"九月活动日期、满 260 减 40、赠品 299 元门槛及原有效期恢复规则。"}
+  ]
+}

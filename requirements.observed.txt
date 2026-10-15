@@ -1,0 +1,8 @@
+# 仅记录已验证环境；本任务没有安装包，也不要求执行 pip install。
+# Python 3.13.14: C:/Users/11873/anaconda3/envs/langgraph/python.exe
+fastapi==0.141.1
+uvicorn==0.52.1
+pydantic==2.13.4
+httpx==0.28.1
+python-multipart==0.0.32
+pytest==8.4.2

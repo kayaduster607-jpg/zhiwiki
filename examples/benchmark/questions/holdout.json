@@ -1,0 +1,14 @@
+[
+  {"id":"holdout-project-quota","question":"雾岚同一工作区建两个项目，是否就有六个同时运行槽位？","reference_answer":"不是。项目共享工作区三个普通运行槽位，创建新项目不会新增额度。","key_points":["配额单位是工作区","项目共享三个槽位","不是六个"],"qrels":{"benchmark:queue":2,"benchmark:access":1}},
+  {"id":"holdout-queue-full","question":"提交返回 QUEUE_FULL 后，雾岚会先建一个隐藏任务等待有额度吗？","reference_answer":"不会。工作区排队最多二十个，超限拒收且不创建隐藏任务，应先查任务列表再决定稍后提交。","key_points":["最多二十个排队","不建隐藏任务","先读取任务列表"],"qrels":{"benchmark:queue":2}},
+  {"id":"holdout-schema","question":"INPUT_SCHEMA_INVALID 可以等平台自动重试修好吗？","reference_answer":"不能。输入结构错误不自动重试，需修改输入后重新提交。","key_points":["不自动重试","修改输入","重新提交"],"qrels":{"benchmark:retries":2}},
+  {"id":"holdout-idempotency","question":"提交结果未知时应如何使用 client_request_id？相同标识但输入改变会怎样？","reference_answer":"先查询相同标识；二十四小时窗口内相同输入重发返回原任务，相同标识而输入不同返回 REQUEST_CONFLICT。","key_points":["先查询已有结果","同工作区二十四小时","相同输入原任务","不同输入冲突"],"qrels":{"benchmark:retries":2}},
+  {"id":"holdout-refresh-link","question":"雾岚成功产物已经存在七十小时，重新生成十五分钟链接会延长七十二小时保留期吗？","reference_answer":"不会。新链接只改变链接有效期，产物仍从成功终态起计算七十二小时。","key_points":["生成链接不延长产物期","链接十五分钟","保留期从成功终态起算"],"qrels":{"benchmark:artifacts":2}},
+  {"id":"holdout-rollback-queue","question":"正式配置回退后，雾岚已经排队的任务是否自动使用历史配置？要改变它应怎样处理？","reference_answer":"不会。回退产生新发布编号，只影响之后接收的任务；旧任务需按授权取消并重新创建。","key_points":["回退新发布编号","旧排队快照不变","授权取消后新建"],"qrels":{"benchmark:releases":2,"benchmark:queue":1}},
+  {"id":"holdout-incident-recovery","question":"部分雾岚任务失败但其他仍可运行属于哪级事件，告警消失就能宣布恢复吗？","reference_answer":"属于 I2；告警消失不足以宣布恢复，需要新的任务执行证据。","key_points":["I2","告警消失不足","新任务执行证据"],"qrels":{"benchmark:incidents":2}},
+  {"id":"holdout-maintenance-retry","question":"收到 MAINTENANCE_HOLD 和单纯网络超时的提交请求，都能直接换个新标识重发吗？","reference_answer":"不应直接换标识。明确维护拒收不产生新任务，维护后使用原标识核查重提；网络超时可能结果未知，先按幂等规则查询。","key_points":["维护拒收没有新编号","使用原client_request_id","超时结果未知先查询"],"qrels":{"benchmark:maintenance":2,"benchmark:retries":2}},
+  {"id":"holdout-runtime-clock","question":"雾岚任务排队了十分钟后开始运行，十八分钟运行上限只剩八分钟吗？维护会重置上限吗？","reference_answer":"不是，十八分钟从实际运行开始，不包括排队；维护中仍运行的任务不自动获得额外窗口。","key_points":["排队不计运行上限","仍有完整单次十八分钟","维护不自动重置"],"qrels":{"benchmark:queue":2,"benchmark:maintenance":2}},
+  {"id":"holdout-export-ready","question":"雾岚审计导出审批通过后就是可下载了吗，操作员可代替管理员自助申请吗？","reference_answer":"不是。审批后还有生成过程，需要状态可下载；批量导出限管理员申请并由另一管理员审批，操作员任务权限不能替代。","key_points":["审批不等于生成完成","管理员申请","另一管理员审批","操作员权限不足"],"qrels":{"benchmark:audit-export":2,"benchmark:access":1}},
+  {"id":"holdout-support-secrets","question":"调查雾岚下载失败与 I1 事件时，支持人员应收完整签名链接和临时凭据作证据吗？","reference_answer":"不应收集这些秘密。收集工作区、请求或产物标识、脱敏错误码及相关事件信息即可。","key_points":["不收完整签名链接","不收临时凭据","使用标识和脱敏错误信息"],"qrels":{"benchmark:artifacts":2,"benchmark:incidents":2,"benchmark:access":1}},
+  {"id":"holdout-unknown","question":"QXORM_782 量子纠缠设备的钙钛矿吸收峰是多少？","reference_answer":"该问题超出雾岚平台虚构资料范围，没有对应设备或数值依据。","key_points":["超出资料范围","不编造吸收峰"],"qrels":{},"expect_abstain":true}
+]

@@ -1,0 +1,14 @@
+{
+  "data_dir": "data",
+  "provider": "offline",
+  "base_url": "",
+  "model": "",
+  "api_key_env": "RAG_API_KEY",
+  "max_rounds": 6,
+  "max_tool_calls": 12,
+  "timeout_seconds": 60.0,
+  "request_timeout_seconds": 20.0,
+  "max_context_chars": 24000,
+  "max_total_tokens": 24000,
+  "max_output_tokens": 1500
+}

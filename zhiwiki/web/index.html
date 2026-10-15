@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#151515">
+  <title>知证 · Agentic RAG + Wiki</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2379efd0'/%3E%3Cpath d='M11 12h18L11 28h18M20 10v20' stroke='%2310151f' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/archive.css">
+  <script src="/assets/archive-model.js" defer></script>
+  <script src="/assets/archive.js" defer></script>
+  <script src="/assets/motion.js" defer></script>
+  <script src="/assets/workspace.js" defer></script>
+  <script src="/assets/revisions.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+</head>
+<body data-view="overview">
+  <!-- THESIS: A walk through evidence, with direct access to the real workspace.
+  OWN-WORLD: Charcoal archive architecture, ivory type, copper actions, clear source rows.
+  STORY: Ask immediately; explore a real claim; open its source; maintain the knowledge.
+  FIRST VIEWPORT: Full-bleed archive at right, question and heading at left, navigation above.
+  FORM: User-pinned Kage spatial reference supersedes seed 3e6cc86b; original imagery and implementation.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md -->
+  <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M8 10.5h5M10.5 8v5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C9 3 5 3 2 4v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-3-1-7-1-10 1zM12 5v15"/></symbol>
+    <symbol id="i-nodes" viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="m10.5 7.5-4 9m7-9 4 9M8 19h8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-7z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  </defs></svg>
+  <a class="skip-link" href="#main">跳到内容</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="知证首页"><span class="brand-mark">知</span><span>知证<small>Knowledge, connected.</small></span></a>
+    <div class="workspace-label"><span class="status-dot"></span>个人知识空间 <span class="local-tag">LOCAL</span></div>
+    <nav aria-label="工作区">
+      <button data-view="overview" aria-pressed="true"><svg class="icon"><use href="#i-grid"/></svg>工作台</button>
+      <button data-view="query" aria-pressed="false"><svg class="icon"><use href="#i-search"/></svg>知识调查<span class="nav-tag">Agent</span></button>
+      <button data-view="documents" aria-pressed="false"><svg class="icon"><use href="#i-file"/></svg>原始资料<span id="nav-doc-count" class="nav-count">0</span></button>
+      <button data-view="wiki" aria-pressed="false"><svg class="icon"><use href="#i-book"/></svg>Wiki 知识<span id="nav-wiki-count" class="nav-count">0</span></button>
+      <button data-view="architecture" aria-pressed="false"><svg class="icon"><use href="#i-nodes"/></svg>架构与切分</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="sidebar-orbit" aria-hidden="true"><i></i><i></i><b></b></div><strong>让知识相互连接</strong><p>资料保留原文，结论保留出处。</p><span id="sidebar-status" class="tiny">正在连接本地工作区</span></div>
+    <div class="profile"><span class="avatar">我</span><div>本地工作区<small>Agentic RAG + Wiki</small></div><span class="status-dot"></span></div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar"><div class="breadcrumb"><button data-go="overview" class="header-brand" aria-label="回到知证首页"><svg class="archive-logo" viewBox="0 0 28 28" aria-hidden="true"><path d="M4 23V5h15v18M9 23V10h15v13M4 23h20"/></svg><span>知证<small>ZHIZHENG</small></span></button><span class="breadcrumb-divider">/</span><strong id="page-name">工作台</strong></div><nav id="entry-navigation" class="entry-navigation" aria-label="首页导航"><button data-go="documents">原始资料</button><button data-go="wiki">Wiki 知识</button><button data-go="architecture">架构与切分</button><button data-go="query" class="nav-investigate">进入工作区<svg class="icon"><use href="#i-arrow"/></svg></button></nav><div class="header-actions"><button id="entry-menu" class="icon-button" aria-label="打开首页导航" aria-controls="entry-navigation" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button id="quick-investigate" class="secondary compact" title="提问（Ctrl / ⌘ K）">提问 <kbd>Ctrl K</kbd></button><span id="mode" class="badge">连接中</span><button id="motion-toggle" class="icon-button" aria-pressed="true" title="切换动效"><svg class="icon"><use href="#i-bolt"/></svg><span class="motion-label">动效</span></button><button id="seed" class="secondary compact"><svg class="icon"><use href="#i-plus"/></svg>载入演示空间</button></div></header>
+    <main id="main" tabindex="-1">
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="overview-view" class="view">
+        <section class="archive-hero" aria-labelledby="archive-heading">
+          <div class="archive-world" aria-hidden="true">
+            <img class="archive-image" src="/assets/media/knowledge-archive.png" width="1672" height="941" alt="" fetchpriority="high">
+            <div class="archive-shade"></div>
+            <canvas id="archive-dust"></canvas>
+            <div class="archive-planes"><i></i><i></i><i></i></div>
+            <div class="archive-wordmark">ZHIZHENG</div>
+          </div>
+          <div class="archive-copy">
+            <h1 id="archive-heading">穿过信息。<br><span>抵达有据可循的答案。</span></h1>
+            <p>让分散的资料彼此连接。<br>从问题出发，沿着原文探索，留下可复用的知识。</p>
+            <form id="entry-form" class="entry-composer">
+              <label for="entry-question" class="sr-only">在知识空间中提问</label>
+              <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+              <input id="entry-question" name="question" required maxlength="4000" placeholder="你想从资料中找到什么？" autocomplete="off">
+              <button type="submit" aria-label="开始知识调查"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </form>
+            <div class="entry-examples"><span>试着问</span><button data-entry-question="对比 2025 和 2026 版政策，质量问题换货窗口有什么变化？">新旧政策有什么变化？</button><button data-entry-question="阅读灯保修期是多少个月？">阅读灯的保修范围？</button></div>
+            <span class="entry-mode" id="entry-mode">正在连接你的知识空间</span>
+          </div>
+          <div class="hero-caption"><span>KNOWLEDGE HAS A SOURCE.</span><p>资料有版本。结论有出处。</p></div>
+          <div class="hero-bottom"><a href="#archive-evidence" id="explore-archive">探索知识如何连接<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a><button data-go="query" class="enter-workspace">直接进入工作区<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+        </section>
+
+        <section id="archive-evidence" class="archive-evidence" aria-labelledby="evidence-heading">
+          <div class="evidence-intro"><h2 id="evidence-heading">每一个结论，<br>都找得到来处。</h2><p>Wiki 里的知识不是孤立的答案。<br>点开引用，就能回到支撑它的那一版原文。</p><button data-go="wiki" class="archive-link">浏览 Wiki 知识<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+          <div class="evidence-demonstration"><div class="proof-heading"><span>来自你的知识库</span><span id="proof-state">正在载入</span></div><h3 id="proof-title">连接原文与知识</h3><p id="proof-claim">载入后，在这里查看一条已发布的知识结论和它的引用。</p><div class="proof-connector" aria-hidden="true"><span></span><svg class="icon"><use href="#i-arrow"/></svg><span>原文依据</span></div><div id="proof-sources"></div><button id="proof-open" class="archive-link" hidden>查看完整 Wiki<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+        </section>
+
+        <section class="archive-collection" aria-labelledby="collection-heading">
+          <div class="collection-heading"><h2 id="collection-heading">你的知识，正在这里生长。</h2><button data-go="documents" class="archive-link">管理原始资料<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+          <div class="stats"><button class="stat" data-go="documents"><strong id="count-docs">0</strong><span>原始资料</span><small>当前有效版本</small></button><button class="stat" data-go="architecture"><strong id="count-chunks">0</strong><span>证据片段</span><small>可回到原文位置</small></button><button class="stat" data-go="wiki"><strong id="count-published">0</strong><span>已发布 Wiki</span><small>可参与知识检索</small></button><button class="stat" data-go="wiki"><strong id="count-stale">0</strong><span>待更新知识</span><small>来源变化，需要复核</small></button></div>
+          <div class="overview-lower"><section class="recent-section"><div class="section-head"><h3>最近加入</h3><button class="text-button" data-go="documents">查看全部</button></div><div id="recent-documents" class="recent-list"></div></section><section class="suggestions"><div class="section-head"><h3>从一个问题开始</h3><span class="tiny">虚构业务样例</span></div><button data-question="对比 2025 和 2026 版政策，质量问题换货窗口有什么变化？"><span>政策对比</span><strong>质量问题的换货窗口变了吗？</strong><svg class="icon"><use href="#i-arrow"/></svg></button><button data-question="质量问题换货的运费由谁承担？需要准备什么凭证？"><span>跨文档调查</span><strong>换货运费谁承担，要哪些凭证？</strong><svg class="icon"><use href="#i-arrow"/></svg></button><button data-question="2026 年不支持七天无理由退货的商品有哪些？"><span>条件核实</span><strong>哪些商品不适用无理由退货？</strong><svg class="icon"><use href="#i-arrow"/></svg></button></section></div>
+          <details class="source-map-disclosure"><summary>展开来源关系图<span>查看原文与 Wiki 的真实引用</span></summary><div class="map-surface"><svg id="knowledge-map" viewBox="0 0 560 340" role="group" aria-label="原始资料与 Wiki 来源关系"></svg><p id="graph-caption"></p></div></details>
+        </section>
+      </section>
+
+      <section id="query-view" class="view" hidden>
+        <div class="page-heading"><div><h1>从问题出发，沿证据前进。</h1><p>Agent 根据已找到的资料决定下一步；执行过程与原文引用同步呈现。</p></div></div>
+        <div class="workspace query-workspace"><section class="panel query-main"><div class="section-head"><h2>知识调查</h2><span class="quiet-badge">可追溯回答</span></div><form id="query-form"><label for="question">你想核实什么？</label><textarea id="question" required maxlength="4000" rows="4" placeholder="例如：对比 2025 和 2026 版政策，质量问题换货窗口有什么变化？"></textarea><div class="composer-actions"><label class="sr-only" for="strategy">查询方式</label><select id="strategy"><option value="agentic">Agentic RAG · 迭代检索</option><option value="baseline">固定 RAG · 对照基线</option></select><div><button id="cancel" type="button" class="secondary" hidden>停止</button><button id="ask" type="submit">开始调查<svg class="icon"><use href="#i-arrow"/></svg></button></div></div></form>
+          <div id="execution-route" class="execution-route"><span data-phase="question">理解问题</span><i></i><span data-phase="search">查找资料</span><i></i><span data-phase="evidence">核对引用</span><i></i><span data-phase="answer">整理结果</span></div>
+          <div id="query-idle" class="query-idle"><div class="signal-orbit" aria-hidden="true"><i></i><i></i><svg class="icon"><use href="#i-search"/></svg></div><h3>把问题交给知识空间</h3><p>查资料、读原文、查 Wiki。<br>答案与依据，一起呈现。</p></div>
+          <div id="query-loading" class="query-loading" hidden><span class="scanner" aria-hidden="true"></span><strong id="loading-phase">正在查找资料…</strong><span>实时接收执行状态</span></div>
+          <div id="answer-box" hidden><div class="answer-head"><h2>调查结果</h2><span id="answer-status" class="badge"></span></div><p id="result-meta" class="hint"></p><div id="answer" class="prewrap"></div></div>
+        </section><aside class="panel evidence-panel"><div class="section-head"><h2>证据与过程</h2><span id="evidence-count" class="count-pill">0</span></div><p id="evidence-empty" class="hint">调查完成后，在这里展开原文、版本与定位。</p><div id="citations"></div><details class="event-log" open><summary>公开执行记录</summary><ol id="events" class="events"></ol></details></aside></div>
+      </section>
+      <section id="documents-view" class="view" hidden>
+        <div class="page-heading"><div><h1>知识的起点，是可靠的原文。</h1><p>保留来源与版本。资料变化时，关联 Wiki 自动标记为待核对。</p></div><button id="toggle-import"><svg class="icon"><use href="#i-plus"/></svg>添加资料</button></div>
+        <div class="filter-bar"><div class="search-field"><svg class="icon"><use href="#i-search"/></svg><input id="document-search" placeholder="搜索标题、来源或摘要" aria-label="搜索资料"></div><select id="document-category" aria-label="资料分类"><option value="">全部分类</option></select><button id="refresh-documents" class="secondary">刷新</button></div>
+        <section id="import-panel" class="panel inline-editor" hidden><div class="section-head"><h2>添加或更新资料</h2><button id="close-import" class="icon-button" aria-label="关闭添加资料"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="workspace"><form id="document-form"><div class="form-grid"><div><label for="doc-title">标题</label><input id="doc-title" required maxlength="200"></div><div><label for="source-key">来源标识</label><input id="source-key" required maxlength="200" placeholder="例如：after-sales-policy"></div></div><label for="doc-text">原文内容</label><textarea id="doc-text" required rows="5" maxlength="500000"></textarea><p class="hint">使用相同来源标识更新内容，会创建新版本。</p><button type="submit">保存资料</button></form><form id="upload-form" class="upload-box"><svg class="icon"><use href="#i-file"/></svg><h3>从文件开始</h3><p class="hint">MD / TXT / DOCX · 最大 2 MiB</p><label for="upload-title">资料标题（可选，用于区分同名文件）</label><input id="upload-title" maxlength="200" placeholder="例如：甲部门售后政策"><label for="upload-mode">导入方式</label><select id="upload-mode"><option value="new">新增资料 · 同名文件分别保存</option><option value="update">更新已有资料 · 创建新版本</option></select><div id="upload-target-box" hidden><label for="upload-target">选择要更新的当前资料</label><select id="upload-target"></select><div id="upload-preview" class="prewrap hint"></div><p id="upload-target-hint" class="hint">更新后相关 Wiki 将标记为待核对。</p></div><label for="upload">选择本地文件</label><input id="upload" type="file" required accept=".md,.txt,.docx"><button id="upload-submit" type="submit" class="secondary">导入文件</button></form></div></section>
+        <div id="documents-list" class="document-grid"></div>
+      </section>
+      <section id="wiki-view" class="view" hidden>
+        <div class="page-heading"><div><h1>让一次调查，成为可复用的知识。</h1><p>选择原始资料整理草稿，核对每条结论后发布。来源链始终保留。</p></div><button id="toggle-wiki-editor"><svg class="icon"><use href="#i-plus"/></svg>创建 Wiki</button></div>
+        <div class="filter-bar"><div id="wiki-filters" class="segmented"><button data-status="" aria-pressed="true">全部</button><button data-status="published" aria-pressed="false">已发布</button><button data-status="draft" aria-pressed="false">草稿</button><button data-status="stale" aria-pressed="false">待更新</button></div><button id="lint" class="secondary">检查知识状态</button></div><p id="lint-results" class="hint prewrap"></p>
+        <section id="wiki-editor" class="panel inline-editor" hidden><div class="section-head"><h2>整理一份知识草稿</h2><button id="close-wiki-editor" class="icon-button" aria-label="关闭草稿编辑器"><svg class="icon"><use href="#i-close"/></svg></button></div><form id="wiki-form"><div class="form-grid"><div><label for="wiki-title">页面标题</label><input id="wiki-title" required maxlength="200" placeholder="例如：质量问题换货指南"></div><div><label for="wiki-slug">页面标识</label><input id="wiki-slug" required maxlength="80" pattern="[a-z0-9][a-z0-9_-]*" placeholder="quality-exchange-guide"></div></div><div class="section-head"><label>选择来源资料</label><span id="selection-budget" class="tiny">已选 0 份 · 0 个片段</span></div><div id="wiki-sources" class="source-picker"></div><p id="draft-hint" class="hint">最多选择 12 份资料、20 个片段。离线模式整理为原文摘录草稿。</p><button type="submit">生成草稿<svg class="icon"><use href="#i-arrow"/></svg></button></form></section>
+        <div id="wiki-list" class="wiki-grid"></div>
+      </section>
+      <section id="architecture-view" class="view" hidden>
+        <div class="page-heading"><div><h1>理解架构，亲手验证切分。</h1><p>从资料入库到回答引用，查看知识如何流转，再用真实文本试验参数。</p></div><span class="quiet-badge">透明的执行逻辑</span></div>
+        <div class="architecture-flow panel"><div><svg class="icon"><use href="#i-file"/></svg><h3>资料层</h3><p>原文版本 · 字符切分<br>片段 ID · 精确区间</p></div><span class="flow-connector" aria-hidden="true"></span><div><svg class="icon"><use href="#i-search"/></svg><h3>调查层</h3><p>BM25 检索 · 受限工具循环<br>引用校验 · 预算终止</p></div><span class="flow-connector" aria-hidden="true"></span><div><svg class="icon"><use href="#i-book"/></svg><h3>知识层</h3><p>有来源的草稿 · 核对发布<br>反向依赖 · 过期标记</p></div></div>
+        <div class="workspace chunk-workspace"><section class="panel"><div class="section-head"><h2>切分实验室</h2><span class="quiet-badge">只预览，不写入</span></div><form id="chunk-form"><label for="chunk-strategy">切分策略</label><select id="chunk-strategy"><option value="fixed">字符窗口 · 入库默认基线</option><option value="structure">结构边界 · 章节与句段实验</option></select><label for="chunk-document">从资料中取一段文本</label><select id="chunk-document"><option value="">选择资料，或直接输入下方文本</option></select><label for="chunk-text">原文（最多 20,000 字符）</label><textarea id="chunk-text" maxlength="40000" required rows="7" placeholder="粘贴长文本，观察切分位置和重叠区间。"></textarea><div class="range-label"><label for="chunk-size">窗口上限</label><output id="chunk-size-value">900 字符</output></div><input id="chunk-size" type="range" min="200" max="2000" step="50" value="900"><div class="range-label"><label for="chunk-overlap">重叠长度</label><output id="chunk-overlap-value">120 字符</output></div><input id="chunk-overlap" type="range" min="0" max="450" step="10" value="120"><p class="hint">默认 900 / 120 是本地初始参数，需结合语料评测。基线在窗口后半段尝试换行或中文句号；结构策略按章节与句段边界切分，超长文本按长度兜底。字符数不等于 token 数。</p><button type="submit">预览真实切分<svg class="icon"><use href="#i-arrow"/></svg></button></form></section><section class="panel"><div class="section-head"><h2>片段与原文定位</h2><span id="chunk-summary" class="tiny">等待输入</span></div><div id="chunk-map" class="chunk-map"></div><div id="chunk-list" class="chunk-list"><div class="empty-state"><svg class="icon"><use href="#i-nodes"/></svg><h3>看见上下文的边界</h3><p>调整窗口与重叠长度，比较片段数量、<br>重复字符和原文区间。</p></div></div></section></div>
+        <section class="panel retrieval-observatory"><div class="section-head"><div><h2>检索索引状态</h2><p class="hint">当前进程的真实计数；来源变化后自动刷新索引。</p></div><button id="refresh-index" class="secondary">刷新状态</button></div><div id="index-status" class="index-status"><p class="hint">点击刷新，查看索引与数据库版本是否一致。</p></div></section><div class="architecture-notes"><p><strong>原始证据优先</strong> Wiki 保留原文片段引用，只有有效的已发布页面参与检索。</p><p><strong>知识随来源更新</strong> 同源新版本会使旧片段失效，相关 Wiki 标记为待核对。</p><p><strong>参考与实现分开</strong> 技术来源与实现差异记录于项目策略文档；当前支持字符窗口与结构边界两种预览。</p></div>
+      </section>
+      <footer class="app-footer"><span>知证 · KNOWLEDGE WORKSPACE</span><span>资料有版本，知识有出处。</span></footer>
+    </main>
+  </div>
+  <dialog id="detail" aria-labelledby="detail-title"><div class="section-head"><h2 id="detail-title"></h2><button id="close-detail" class="icon-button" aria-label="关闭详情"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="detail-state" class="hint"></p><div id="detail-body" class="prewrap"></div><div id="detail-actions" class="dialog-actions"></div></dialog>
+  <dialog id="revision-dialog" aria-labelledby="revision-heading"><div class="section-head"><h2 id="revision-heading">人工修订 Wiki</h2><button id="close-revision" class="icon-button" aria-label="关闭人工修订"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="revision-state" class="hint" role="status"></p><form id="revision-form"><fieldset id="revision-fields"><label for="revision-title">修订后的标题</label><input id="revision-title" required maxlength="200"><div class="revision-layout"><div><div id="revision-claims"></div><button id="add-claim" type="button" class="secondary">添加一条结论</button></div><aside class="revision-source-panel"><h3 id="revision-source-heading">选择原文</h3><label for="revision-document">加入资料片段</label><select id="revision-document"></select><div id="revision-evidence"></div></aside></div><label for="revision-note">修订说明（可选）</label><input id="revision-note" maxlength="1000" placeholder="例如：更正适用条件，替换已更新的原文引用"><div class="dialog-actions"><button id="save-revision" type="submit">保存为新版本草稿</button><span class="hint">保存后仍需单独核对并发布。</span></div></fieldset></form></dialog>
+</body>
+</html>

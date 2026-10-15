@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "dataset_id": "mist-ops-original-v1",
+  "fictional": true,
+  "authoring": "Original synthetic corpus and labels authored for this project; no third-party blind evaluation.",
+  "documents": [
+    {"file":"corpus/access.md","source_key":"benchmark:access","title":"雾岚作业平台：工作区与访问权限（虚构资料）"},
+    {"file":"corpus/queue.md","source_key":"benchmark:queue","title":"雾岚作业平台：队列与运行额度（虚构资料）"},
+    {"file":"corpus/retries.md","source_key":"benchmark:retries","title":"雾岚作业平台：失败、重试与重复提交（虚构资料）"},
+    {"file":"corpus/artifacts.md","source_key":"benchmark:artifacts","title":"雾岚作业平台：产物保留与下载（虚构资料）"},
+    {"file":"corpus/releases.md","source_key":"benchmark:releases","title":"雾岚作业平台：配置发布与回退（虚构资料）"},
+    {"file":"corpus/incidents.md","source_key":"benchmark:incidents","title":"雾岚作业平台：事件分级与响应（虚构资料）"},
+    {"file":"corpus/maintenance.md","source_key":"benchmark:maintenance","title":"雾岚作业平台：维护窗口与任务接收（虚构资料）"},
+    {"file":"corpus/audit-export.md","source_key":"benchmark:audit-export","title":"雾岚作业平台：审计记录与导出审批（虚构资料）"}
+  ],
+  "splits": {"dev":"questions/dev.json","holdout":"questions/holdout.json"}
+}

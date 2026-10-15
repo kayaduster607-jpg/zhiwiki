@@ -1,0 +1,338 @@
+{
+  "generated_at": "2026-09-09T01:48:55.582150+00:00",
+  "python": "3.13.14",
+  "sqlite": "3.53.2",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "corpus": {
+    "documents": 64,
+    "source_characters": 167862,
+    "chunks": 256,
+    "queries": [
+      "退货凭证",
+      "和田地区",
+      "Battery warranty",
+      "异或逻辑"
+    ],
+    "queries_per_path": 12
+  },
+  "scope": "Single-process local synthetic microbenchmark; not production QPS or answer-quality evaluation.",
+  "baseline": "v2-equivalent N+1/full-document reads and corpus retokenization, with the shared corrected anchor filter",
+  "measurement": "12 samples per path; setup and warm-up excluded; SELECT trace and tokenize instrumentation enabled; p95 nearest-rank",
+  "equal_results": true,
+  "paths": {
+    "legacy_n_plus_one": {
+      "samples": 12,
+      "median_ms": 63.155,
+      "p95_ms": 68.654,
+      "min_ms": 51.694,
+      "max_ms": 68.654,
+      "selects_per_query": [
+        257
+      ],
+      "tokenize_calls_total": 3093,
+      "tokenized_characters_total": 2339136,
+      "full_document_characters_read_total": 8057376,
+      "raw_samples": [
+        {
+          "elapsed_ms": 52.828,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 51.694,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 58.721,
+          "selects": 257,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 63.062,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 64.917,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 62.504,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 65.866,
+          "selects": 257,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 60.244,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 64.343,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 63.248,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 64.601,
+          "selects": 257,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 671448
+        },
+        {
+          "elapsed_ms": 68.654,
+          "selects": 257,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 671448
+        }
+      ]
+    },
+    "cached_cold": {
+      "samples": 12,
+      "median_ms": 60.581,
+      "p95_ms": 70.679,
+      "min_ms": 52.445,
+      "max_ms": 70.679,
+      "selects_per_query": [
+        4
+      ],
+      "tokenize_calls_total": 3093,
+      "tokenized_characters_total": 2339136,
+      "full_document_characters_read_total": 0,
+      "raw_samples": [
+        {
+          "elapsed_ms": 52.445,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 55.533,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 59.911,
+          "selects": 4,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 56.11,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 69.328,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 53.284,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 67.882,
+          "selects": 4,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 66.619,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 68.52,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 61.25,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 70.679,
+          "selects": 4,
+          "tokenize_calls": 257,
+          "tokenized_characters": 194934,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 54.153,
+          "selects": 4,
+          "tokenize_calls": 258,
+          "tokenized_characters": 194926,
+          "full_document_characters_read": 0
+        }
+      ]
+    },
+    "cached_warm": {
+      "samples": 12,
+      "median_ms": 3.183,
+      "p95_ms": 4.177,
+      "min_ms": 2.926,
+      "max_ms": 4.177,
+      "selects_per_query": [
+        1
+      ],
+      "tokenize_calls_total": 21,
+      "tokenized_characters_total": 120,
+      "full_document_characters_read_total": 0,
+      "raw_samples": [
+        {
+          "elapsed_ms": 3.129,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.04,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.736,
+          "selects": 1,
+          "tokenize_calls": 1,
+          "tokenized_characters": 16,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 2.994,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.668,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 2.974,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.082,
+          "selects": 1,
+          "tokenize_calls": 1,
+          "tokenized_characters": 16,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 4.177,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.238,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 2.926,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.765,
+          "selects": 1,
+          "tokenize_calls": 1,
+          "tokenized_characters": 16,
+          "full_document_characters_read": 0
+        },
+        {
+          "elapsed_ms": 3.366,
+          "selects": 1,
+          "tokenize_calls": 2,
+          "tokenized_characters": 8,
+          "full_document_characters_read": 0
+        }
+      ]
+    }
+  },
+  "index_builds": {
+    "legacy_per_query_retokenizations": 12,
+    "cold": 12,
+    "warm_including_one_setup_build": 1
+  },
+  "warm_cache_stats": {
+    "ready": true,
+    "epoch": 320,
+    "hits": 12,
+    "misses": 1,
+    "builds": 1,
+    "items": 256,
+    "terms": 275,
+    "last_build_ms": 49.566,
+    "database_epoch": 320,
+    "current": true
+  }
+}
