@@ -1,8 +1,8 @@
 # RAG 模块 HTTP API 契约
 
-版本：1.1-draft · 2026-10-15 · 对应 [多人服务 PRD](PRD_RAG_SERVICE.md)。
+版本：1.2 · 2026-10-16 · 对应 [多人服务 PRD](PRD_RAG_SERVICE.md)。
 
-**本文件定义待实现的 `/v1` 契约。当前运行验证使用原有 `/api/*`，不能把下面示例视为当前服务已支持。** 一期只开放检索、回读和校验；不需要模型 API Key，不调用内部 Agent。
+**本文件的核心 `/v1` 取证接口已由 `python -m zhiwiki.service` 实现。** 原 `python -m zhiwiki` 保留本地工作台，两者不是同一入口。团队服务默认只取证、不需要模型 API Key、不调用内部 Agent；团队模式已认证访问 `/api/*` 返回410。运行与账号创建见 [团队手册](TEAM_SERVICE.md)，实际验收见 [记录](TEAM_ACCEPTANCE.md)。
 
 ## 1. 公共约定
 
@@ -91,7 +91,7 @@
   "knowledge_snapshots": [
     {"knowledge_base_id": "kb_shared_books", "generation": 17}
   ],
-  "retrieval": {"strategy": "bm25", "version": "bm25-v1", "score_type": "bm25"},
+  "retrieval": {"strategy": "sparse-bm25", "version": "sparse-bm25-v1", "score_type": "bm25"},
   "evidence": [
     {
       "evidence_id": "ev_example_001",
@@ -214,11 +214,17 @@ retrieval_id 是服务端持久 receipt 的索引，不是绕过授权的能力�
 
 `Location` 指向 status_url。上传鉴权在接收大正文前完成，边流边限制 200MiB；反向代理限制与应用限制一致。文本请求上限保持独立，不将所有 JSON 允许到 200MiB。
 
+实现补充：上传 URL 必须带 `?knowledge_base_id=...`，并与 multipart 同名字段一致，以便接收大文件前检查目标库权限。PDF 文件200MiB，multipart 总正文允许额外64KiB；JSON 上限128KiB。MD/TXT/DOCX文件仍为2MiB。
+
 ### 5.2 状态与取消
 
 `GET .../jobs/{job_id}` 返回 `status/pages_total/pages_done/quality_summary/attempt/updated_at/result/error`，未知总数时 pages_total=null；不把页数比例伪装成端到端精确百分比或 ETA。
 
 `POST .../jobs/{job_id}:cancel` 表达持久取消请求；接受后 202/cancel_requested，只有 worker 确实停止才 cancelled。已经 ready/failed/cancelled 返回终态，重复取消幂等。客户端断开上传只取消尚未完成接收；已返回202的job默认继续，须调用cancel才停止。
+
+`POST .../jobs/{job_id}:retry`：editor 可对 failed/cancelled 任务显式续跑；保持已提交页，增加fence、清除取消标记，再次领取时增加attempt，最多3次。原任务已运行/发布等状态返回409。无需重新上传同一不可变文件。
+
+未发布页可 `PUT .../documents/{book}/revisions/{revision}/pages/{page}`，请求 `text/expected_text_sha256/note`，条件不符412；保存原抽取文本、替换规范化文本/片段并清除复核状态，发布前必须重新 review。
 
 ### 5.3 发布
 
@@ -247,7 +253,7 @@ LangGraph工具仅暴露 `query/top_k/filters` 等有限参数。workspace、可
 5. citations:validate；409时最多重新取证一次，403/410不能带旧引用继续。
 6. 返回答案并保留来源版本；日志只留公开运行关联字段。
 
-本轮不引入LangGraph运行依赖或真实模型；未来集成验收需覆盖真实节点取消、并行tool调用的预算共享和跨用户隔离。只使用HTTP测试替身无法证明这一层集成已经完成。
+服务启动不依赖LangGraph，测试依赖固定LangGraph1.2.10，并实际通过StateGraph编译/ainvoke运行节点。`zhiwiki.service.client.RagClient`复用连接池，`langgraph_node`冻结凭据与库；每实例同用户串行，节点共享任务deadline，取消/重试另有测试。真实模型仍未接入，这些测试不代表模型工具选择效果。
 
 ### 6.3 deadline 与重试
 
@@ -291,7 +297,7 @@ LangGraph工具仅暴露 `query/top_k/filters` 等有限参数。workspace、可
 
 ## 7.1 维护与身份入口清单
 
-团队版还需下列接口（M2交付各自schema和契约测试），通过同一个鉴权中间层保护新旧路径：
+团队版实现下列维护接口，通过同一鉴权中间层保护入口；完整参数以在线 `/v1/openapi.json` 与团队手册为准：
 
 | 接口 | 语义与最低约束 |
 |---|---|
@@ -316,9 +322,22 @@ LangGraph工具仅暴露 `query/top_k/filters` 等有限参数。workspace、可
 
 ## 9. API验收清单
 
-- 请求与响应JSON Schema、实际OpenAPI在M2交付，字段/fixture由契约测试约束。本文件提供产品语义，不冒充已生成可执行OpenAPI。
+- 核心取证请求与响应使用Pydantic schema，登录后可读取 `/v1/openapi.json`；契约测试检查 RetrievalOutput 等响应定义。维护接口还有文档中的前置条件，尤其上传URL库ID、会话CSRF与发布条件头，调用方不能只看JSON字段。
 - 双用户相同query、跨库ID、过期receipt、撤销token、并发共享client headers必须有隔离测试。
 - 覆盖成功/空结果/拒绝/超时/索引更新/上传断线/同键重放/同键异体/重启恢复。
 - 性能验收明确JSON正文、片段长度、冷暖状态与ID解析成本，不能把健康检查QPS当检索容量。
 - 容量内验收为20个授权身份各1个同时请求全部按时成功，0个429/503/504；再测20个Agent连续retrieve/read/validate，确保同用户串行、跨用户并发、连接池和全局突发额度不会误拒绝后续步骤。超过容量的拒绝测试独立报告。
 - 本轮旧API全书运行报告单独标注compatibility_mode=legacy_api；禁止为凑“跑通”结果把旧/api/query返回值改名成/v1/retrievals响应。
+
+## 10. 实现版本与附加接口
+
+- 检索策略为 `sparse-bm25`；多库为 `rrf-sparse-bm25`，版本 `sparse-bm25-v1`。分数只作同次响应的排名依据，不是可信度概率。
+- `filters.language/effective_at` 采用严格元数据策略，unknown 不匹配，响应给出 `unknown_metadata_excluded` 策略提示；这不是被排除资料的精确数量。
+- `PUT .../documents/{book}/metadata` 设置 language/tags/effective_from/effective_to，editor 可写；提高知识代次并使旧receipt失效。未提供适用期时不推断日期。
+- 分页游标带HMAC、用户/库/limit/排序边界及10分钟有效期，不能跨身份/库复用。每页都重新鉴权。
+- `GET .../documents/{book}/revisions/{revision}/file` 要求download scope；历史修订至少editor。每用户1、全局4下载，发送停滞和总时限受限。
+- `GET .../metrics`、`GET .../audit-events` 仅系统管理员会话；PAT不取得管理权限。原文、用户、授权和审计均不由普通调用方指定principal覆盖。
+- 快照备份/恢复为本机管理CLI能力，不开放任意路径的远程恢复API。
+- 已发布内容检索只返回原文chunk，团队Wiki维护单独走受权草稿/发布/导出接口；原本地Agent仍可查Wiki，不混淆两种检索入口。
+- `GET .../retrievals/{id}` 走独立控制门禁：全局最多4个、每身份1个状态读取，共享速率预算但不占原工具的在途位。运行中返回409/REQUEST_IN_PROGRESS及Location；不能因原任务占槽而无法查询状态。
+- 重复POST仍先受用户并发门禁约束，原工具尚占槽时可返回429；需要读取已有执行状态时使用上述GET。GET不在本次POST工具容量计时范围内。

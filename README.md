@@ -2,124 +2,69 @@
 
 # 知证 · ZhiWiki
 
-### 把散落的资料，变成可追溯、可维护的知识。
+### 让 Agent 取得有权限、有版本、可回读的证据。
 
-**Agentic RAG × 版本化 Wiki × 本地知识工作台**
+**团队 RAG API · 原生书籍导入 · 版本化 Wiki**
 
-An evidence-first knowledge workspace that connects answers, sources, and revisions.
-
-[![CI](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/core-ci.yml/badge.svg)](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/core-ci.yml)
+[![Service CI](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/service-ci.yml/badge.svg)](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/service-ci.yml)
+[![Core CI](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/core-ci.yml/badge.svg)](https://github.com/kayaduster607-jpg/zhiwiki/actions/workflows/core-ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-WAL-003B57?logo=sqlite&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-193_Python_%2B_68_JS-2f7d63)
+![Tests](https://img.shields.io/badge/Tests-226_Python_%2B_68_JS-2f7d63)
 
-[为什么做知证](#为什么做知证) · [功能亮点](#功能亮点) · [快速体验](#快速体验) · [工程验证](#工程验证) · [⭐ Star](https://github.com/kayaduster607-jpg/zhiwiki/stargazers)
-
-</div>
-
-一份售后政策改了，哪些答案还可以用？哪些知识页需要重审？
-
-**知证围绕“答案的来处”和“知识的变化”组织工作流。** Agent 沿着原文调查问题，把有用结论整理为带引用的 Wiki；原文形成新版本时，相关页面自动标记为待更新，保留历史，等待重新核对。
-
-![知证实际运行的知识空间首页](docs/images/workspace-home.jpg)
-
-<div align="center">
-
-**沿证据调查 · 将结论沉淀 · 让更新可追踪**
+[快速开始](#快速开始) · [Agent 接入](#agent-接入) · [工程验证](#工程验证) · [设计取舍](#设计取舍) · [部署手册](docs/TEAM_SERVICE.md)
 
 </div>
 
-## 为什么做知证
+一本书导入了一半，能不能被查到？政策改版后，旧引用还算不算有效？多个 Agent 同时调用，会排队还是直接被拒绝？
 
-企业政策、产品手册、客服规范和个人研究资料都在持续变化。找到一段相关文字只是起点，真正反复发生的工作是：**核对依据、整理结论、发现过时内容，再把知识更新回来。**
+**知证把这些问题落实到版本、权限、任务和事务。** 外部 Agent 负责规划与生成，RAG 服务负责交付证据；原文更新时，依赖它的 Wiki 自动失效。适用于内部 10–20 人、单机共享知识库的研究和试运行。
 
-| 你会遇到的情况 | 知证怎样处理 |
-| --- | --- |
-| 一个问题涉及政策、费用和例外条款 | Agent 可继续搜索原文、查 Wiki、阅读证据，公开展示取证步骤 |
-| 答案看起来合理，但需要检查依据 | 从引用回到原文版本和具体字符位置，核对完整上下文 |
-| 同一问题被反复查询、反复整理 | 将结论保存为带来源的 Wiki，支持修订、发布与 Markdown 导出 |
-| 政策改了，旧知识仍留在知识库里 | 更新原文时，在同一事务中使依赖页面失效，并将其移出有效 Wiki 检索 |
-| 两个编辑窗口先后修改同一页面 | 校验预期版本，冲突返回 409，保留编辑内容供比较 |
+项目有两个入口：独立的 `/v1` 团队证据 API，以及可演示调查、引用和 Wiki 维护的本地工作台。默认均可离线运行，团队 API 不调用模型。
 
-### 从一条政策，走完一次知识更新
+![知证本地工作台：知识空间与证据入口](docs/images/workspace-home.jpg)
 
-以仓库自带的虚构售后场景为例，你可以实际操作这条流程：
+<div align="center">截图为本地工作台；团队服务使用独立登录页、授权与 API。</div>
 
-![从资料到知识更新：取证、沉淀、原文更新、知识待更新与修订发布](docs/images/knowledge-lifecycle.png)
+## 核心能力
 
-**每个结论都能展开来源，每次修订都留下版本。** 原文更新、Wiki 状态和人工发布共同构成知识维护的闭环。
+| 能力 | 实际行为 |
+|---|---|
+| 原生 PDF 导入 | HTTP 上传后返回持久 job；独立解析进程按页保存检查点，保留抽取原文、规范化文本、页码和质量标记 |
+| 整书版本发布 | 待审页不进入默认检索；校订后重新复核，按 If-Match 原子切换整书版本，旧版保留 |
+| 身份与库权限 | 可撤销会话/PAT、库授权与角色；查询、直接读取和 receipt 回读都重新鉴权 |
+| 可追溯证据 | 返回 revision、物理 PDF 页码、字符位置、文本 SHA-256、质量提示及短期 receipt |
+| 一致性校验 | 响应前在同一短事务中复查授权和全部证据并保存 receipt；更新后旧证据返回 409 |
+| 并发调度 | 4 个执行槽 + 16 个 FIFO 排队位、每身份 1 个在途请求；排队包含在 2 秒截止内 |
+| Agent 连接 | Python 异步客户端、LangGraph 节点、连接池、总 deadline、有界重试及幂等键 |
+| Wiki 维护 | 草稿、人工复核、修订发布、Markdown 导出；来源更新与依赖失效在同一事务提交 |
+| 运维 | 单 API 实例锁、租约/fence 恢复、管理员指标与审计、一致备份及校验恢复 |
 
-## 功能亮点
+文本 PDF 上限 200 MiB / 2,000 页，MD/TXT/DOCX 上限 2 MiB；每库最多 50,000 片段。检索为中文单字/双字及英文词项的 BM25，默认固定 900 字符窗口、120 字符重叠。
 
-### 01 · 沿着证据继续调查
+### 一本书从上传到可引用
 
-接入支持工具调用的模型后，Agent 根据已取得的资料决定下一步操作。应用提供三个职责明确的只读工具：
+```mermaid
+flowchart LR
+  Upload[授权上传] --> Job[持久任务 / 逐页检查点]
+  Job --> Review[质量复核 / 校订待审页]
+  Review --> Publish[条件发布 / 整书版本切换]
+  Publish --> Retrieve[按权限检索]
+  Retrieve --> Read[回读原文与定位]
+  Read --> Validate[验证版本和文本哈希]
+```
 
-| 工具 | 作用 |
-| --- | --- |
-| `search_documents` | 在当前原文片段中检索线索 |
-| `search_wiki` | 检索有效的已发布知识，并带回底层来源 |
-| `read_evidence` | 阅读指定证据，检查内容与当前有效状态 |
+缺字、空白页和低文本页会留下标记。任务处理完所有页，不代表 OCR、公式或全文都准确；扫描件和公式结构解析不在当前能力内。
 
-执行记录展示工具、参数、命中来源、用量和停止原因。轮次、工具次数、上下文、输出、累计 Token 与时间预算约束整个循环；同时保留固定 RAG 基线，便于在相同资料上做对照。
+### 把证据沉淀为可维护的 Wiki
 
-### 02 · 回答与依据，一起交付
+本地工作台支持调查、来源展开、人工修订与发布。原文换版后，依赖旧片段的知识页进入待更新状态，历史依据仍可核对。
 
-引用保留**原文版本、片段 ID 和字符定位**。问答、Wiki 详情和导出都围绕这条来源链组织，方便核对适用条件与原文含义。
+![原文取证、Wiki沉淀、来源更新与知识修订的完整流程](docs/images/knowledge-lifecycle.png)
 
-下面是实际运行中展开 Wiki 引用的界面：
+## 快速开始
 
-![Wiki 结论、来源版本和展开后的原文](docs/images/wiki-evidence.jpg)
-
-### 03 · 让知识跟得上原文变化
-
-原文与 Wiki 分别版本化，依赖关系落实到具体原文片段。更新资料后：
-
-- 同一来源形成新版本，旧正文与旧片段保留。
-- 依赖旧版本的 Wiki 标记为待更新，退出有效 Wiki 检索。
-- 维护者重新核对结论与引用，保存新草稿，再显式发布。
-
-**原文更新与依赖失效在同一 SQLite 写事务中提交。** 页面历史仍可查看，过时依据有迹可循。
-
-### 04 · 把结论沉淀成可维护的 Wiki
-
-从资料整理草稿，逐条改写结论、选择引用、记录维护备注，再发布为知识页。每次保存创建新的修订，已有发布版在仍然有效时继续可用。
-
-支持草稿、已发布、待更新与归档历史；内置知识状态检查和 Markdown 导出。上传同名文件默认创建独立来源，只有明确选择更新目标时才产生下一版。
-
-<details>
-<summary><strong>展开真实运行截图：Wiki 知识库与知识调查</strong></summary>
-
-#### Wiki 知识库
-
-![Wiki 列表中的已发布知识与版本](docs/images/wiki-library.jpg)
-
-#### 知识调查
-
-![实际提交样例问题后的知识调查界面](docs/images/knowledge-query.jpg)
-
-截图于 2026-10-15 从本地运行服务截取。所用资料为仓库内置虚构样例，示例 Wiki 为人工整理；模型服务可按下方配置接入。
-
-</details>
-
-### 05 · 轻量运行，也有完整的工程链路
-
-**一个 Python 服务进程、一份 SQLite 数据库、原生浏览器界面。** 前端无需 npm 构建或 CDN，本地即可完成导入、检索、修订、发布和来源核对。
-
-| 层次 | 实现 |
-| --- | --- |
-| 使用入口 | 浏览器工作台、HTTP API、CLI 共用业务核心 |
-| 资料接入 | UTF-8 Markdown、TXT、DOCX 正文；显式新增与版本更新 |
-| 检索 | 中文单字/双字与英文词项 BM25、标题加权、词法锚点过滤 |
-| 分块 | 默认 900 字符窗口、120 字符重叠；提供结构切分预览 |
-| 状态持久化 | SQLite WAL 保存原文、片段、Wiki 修订、依赖与查询轨迹 |
-| 索引维护 | 内存 BM25 索引复用，数据库 epoch 变更时重建 |
-| 交互反馈 | SSE 执行步骤、来源展开、版本冲突反馈与键盘提问入口 |
-
-## 快速体验
-
-推荐使用 **Python 3.13**。安装依赖后，即可从内置样例开始，无需先准备自己的资料或模型密钥。
+使用 **Python 3.13**。完整服务依赖固定在仓库中，无需前端构建或 CDN。
 
 ```bash
 git clone https://github.com/kayaduster607-jpg/zhiwiki.git
@@ -127,171 +72,159 @@ cd zhiwiki
 python -m venv .venv
 ```
 
-激活环境：
+Windows 激活 `.\.venv\Scripts\Activate.ps1`；Linux/macOS 激活 `source .venv/bin/activate`。
 
-```powershell
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-```
+### 启动团队证据 API
 
 ```bash
-# Linux / macOS
-source .venv/bin/activate
+python -m pip install -r requirements.txt -r requirements-parser.txt
+python -B -m zhiwiki.service --config config.team.example.json bootstrap admin
 ```
 
-启动知识空间：
+首次管理员密码交互输入，至少 12 字符，无默认密码。随后在两个终端分别运行：
 
 ```bash
-python -m pip install -r requirements.txt
+# 终端 A：--local-http 仅用于本机演示
+python -B -m zhiwiki.service --config config.team.example.json serve --port 8872 --local-http
+
+# 终端 B：独立导入 supervisor
+python -B -m zhiwiki.service --config config.team.example.json worker
+```
+
+打开 [http://127.0.0.1:8872](http://127.0.0.1:8872)。管理员通过受权 API 创建知识库、用户与角色，用户申请自己名下的只读令牌供 Agent 使用。团队页面提供基本登录和检索；导入、发布与授权示例见 [团队手册](docs/TEAM_SERVICE.md)。
+
+配置使用显式 JSON，不读取 `.env`。可通过 `worker_python` 指定安装了 `pypdf==6.10.0` 的独立解析环境。
+
+### 体验本地知识工作台
+
+```bash
 python -B -m zhiwiki --config config.example.json seed
 python -B -m zhiwiki --config config.example.json serve --port 8875
 ```
 
-打开 **[http://127.0.0.1:8875](http://127.0.0.1:8875)**。
+打开 [http://127.0.0.1:8875](http://127.0.0.1:8875)，体验 16 份虚构业务原文、28 个片段和 4 页人工示例 Wiki。可以提问、展开引用、更新来源，再观察知识页进入待更新状态，详见 [三分钟演示](docs/SHOWCASE.md)。
 
-你会得到 **16 份虚构业务原文、28 个片段、4 页人工示例 Wiki**，可以直接浏览、提问、展开引用、修改资料和体验知识失效。重复载入样例不会覆盖已有手工修订。
+团队入口与本地入口默认分别使用 `data-team/` 和 `data/`。团队模式关闭旧 `/api/*`；本地工作台只供回环使用，不作为多人部署入口。
 
-### 建议先试这三个问题
+## Agent 接入
 
-> 对比 2025 和 2026 版售后政策，质量问题换货窗口有什么变化？
->
-> 质量问题换货的运费由谁承担？需要准备什么凭证？
->
-> 星舟阅读灯保修期多长，人为摔坏是否免费保修？
+外部 Agent 决定如何调查和生成答案，RAG 返回原文证据。令牌、服务地址和可访问库由调用方注入，不暴露给模型工具参数。
 
-接着打开任意 Wiki，展开原文引用；再通过“更新已有资料”修改其来源，观察关联知识如何进入待更新状态。更完整的操作路径见 [三分钟演示](docs/SHOWCASE.md)。
+```python
+import asyncio
+import os
+from zhiwiki.service.client import RagClient
 
-### 连接你的模型
+async def main():
+    async with RagClient("http://127.0.0.1:8872", os.environ["ZHIWIKI_TOKEN"]) as rag:
+        found = await rag.retrieve("退货运费如何确定？", ["你的知识库ID"])
+        if not found["evidence"]:
+            return found
+        read = await rag.read(
+            [found["retrieval_id"]],
+            [item["evidence_id"] for item in found["evidence"]],
+        )
+        valid = await rag.validate([read["retrieval_id"]], [
+            {"evidence_id": item["evidence_id"], "text_sha256": item["text_sha256"]}
+            for item in read["evidence"]
+        ])
+        return {"evidence": read["evidence"], "validation": valid}
 
-复制 `config.example.json` 为 `config.local.json`，修改以下字段，其余预算设置可保留：
-
-```json
-{
-  "provider": "openai",
-  "base_url": "https://your-service.example/v1",
-  "model": "your-model-id",
-  "api_key_env": "RAG_API_KEY"
-}
+asyncio.run(main())
 ```
 
-服务需支持 Chat Completions 的 `tools` / `tool_choice`；客户端在 `base_url` 后追加 `/chat/completions`。在 IDE 运行配置或启动进程的环境变量中设置 `RAG_API_KEY`，然后启动：
+复用一个长期客户端，不逐次重建连接池。`langgraph_node(rag_client, [kb_id])` 可直接接入 StateGraph，完整示例见团队手册。客户端每调用最多 3 秒、服务端最多 2 秒；同一次逻辑调用重试保留幂等键，不自动重试权限和版本冲突。
 
-```bash
-python -B -m zhiwiki --config config.local.json serve --port 8875
+最终回答前，外层 Agent 应再次验证实际使用的引用。`semantic_support=not_checked` 表示校验身份、版本和文本，不证明答案与原文的语义蕴含。
+
+本地工作台可另行通过 OpenAI 兼容接口启用模型工具循环；团队 API 默认没有模型出站调用。模型配置与预算见 [接口指南](docs/TECHNICAL_GUIDE.md)。
+
+## 设计取舍
+
+```mermaid
+flowchart TD
+  Agent[外部 Agent / Python / LangGraph] --> Auth[会话 / 用户限定 Bearer]
+  Auth --> Gate[身份配额 / FIFO / deadline]
+  Gate --> Index[不可变稀疏 BM25 索引]
+  Index --> Check[短事务复查 / receipt]
+  Check --> DB[(SQLite WAL)]
+  Worker[独立解析进程 / lease + fence] --> Stage[待审整书修订]
+  Stage --> Publish[人工复核 / 条件发布]
+  Publish --> DB
+  Publish --> Index
 ```
 
-原文和修订保存在本机；模型调用会将相关上下文发送给你配置的服务。密钥不写入 JSON，项目不加载 `.env`，本机配置已加入 Git 忽略规则。
+| 选择 | 原因 | 代价与扩展条件 |
+|---|---|---|
+| 证据服务与生成分离 | 避免外层 Agent 再触发内部 Agent，调用次数和权限边界明确 | 综合回答由调用方负责；模型预算另设 |
+| 单 API + 独立导入进程 | 查询和长时间 PDF 解析分别限流、取消及恢复 | 单机故障域；多进程前必须迁出全局协调 |
+| SQLite WAL 与短事务 | 复用版本/引用事实，发布、失效和 receipt 可原子提交 | 单写者，不提供多机 HA；写等待与可用性需求决定是否迁移 |
+| 持久稀疏 BM25 + NumPy | 预计算倒排贡献，查询不用在 Python 中逐个评分大量候选 | 词法召回会漏同义表达；向量/重排应通过固定 qrels 对照选型 |
+| 不可变索引 + generation | 索引先准备，再切换事实指针；重启可校验加载 | 需要派生文件、磁盘水位和恢复协议 |
+| Opaque token | 每次检查当前授权，支持即时撤销 | 增加 DB 授权读取；SSO/身份联邦另行设计 |
 
-## 系统架构
+索引使用 `sparse-bm25-v1`，SQLite 保存小端倒排数组与元数据，文件以 SHA-256 命名；不使用 pickle。元数据过滤在 top-k 前执行，多库使用 RRF 融合。默认不缓存查询结果。
 
-![知证模块分层：浏览器与 CLI、Agent 与 Wiki 工作流、共享模型接口、检索与版本存储](docs/images/system-architecture.png)
+### 与现成方案的定位
 
-模块化单体让问答与知识维护共享数据规则：`AgentEngine` 管理取证循环，`KnowledgeStore` 管理版本与事务，`WikiCompiler` 组织草稿，发布由维护者显式执行。检索缓存、模型适配与 HTTP 层各有独立边界，方便单独测试和替换。
+按2026-10-16官方资料核对，下面比较功能范围与交付方式，没有做跨产品准确率或吞吐量排名。
+
+| 方案 | 官方能力与定位 | 知证的取舍 |
+|---|---|---|
+| [Dify](https://github.com/langgenius/dify) | 可视化工作流、RAG、模型管理、Agent和应用API | 团队入口只承担证据服务，部署与代码范围更小；完整应用编排和模型生态覆盖面有限 |
+| [RAGFlow](https://github.com/infiniflow/ragflow) | 深度文档处理、OCR、多路召回/重排、Agentic检索及Wiki等知识编译 | 仅文本PDF和词法BM25，复杂版式、扫描件与语义召回存在明显差距；Wiki并非本项目独有能力 |
+| [LangChain检索组件](https://docs.langchain.com/oss/python/deepagents/retrieval) | 可组合加载、切分、检索与Agent工具 | 本项目把库授权、版本发布、receipt、背压与恢复落实成可运行的服务；检索组件生态规模较小 |
+
+知证的工程价值在于能从代码与测试追到**权限检查点、版本切换、引用有效性和资源归还**。如果目的是直接使用完整平台，应结合成熟方案的能力与部署要求评估；本项目没有“效果优于市面产品”的验证结论。
+
+### 20 人同时用，具体指什么
+
+容量内验收使用 **20 个授权身份各同时提交 1 个请求，全部按时成功**；429/503 不能计作成功。还分别测试 20 个任务各执行 3/6 次工具调用。
+
+默认每身份 30 rpm、突发 6 次；全局 120 rpm、突发 120 次。执行槽只有 4 个，其余请求有界排队；超时或客户端断开后，线程真实结束才归还运行槽。20 人在线不代表可持续每秒产生 20 个请求，持续负载口径为总 1 req/s。
 
 ## 工程验证
 
-### 检索优化有可复现的数字
-
-**同一批查询，检索结果一致；暖缓存路径将每次查询的 SELECT 从 257 次降到 1 次。**
-
-| 路径 | 每次查询 SELECT | 检索中位耗时 |
-| --- | ---: | ---: |
-| 旧路径：N+1 读取与逐查询重分词 | 257 | 53.897 ms |
-| 索引冷路径 | 4 | 54.651 ms |
-| 索引暖路径 | **1** | **3.299 ms** |
-
-在这次本地微基准中，暖路径相对旧路径约为 **16.3×** 的检索速度。测试于 2026-10-16 在 Windows / Python 3.13.14 上重跑，使用 64 份合成文档、256 个片段，每条路径 12 次测量；数字对应检索环节。原始逐次结果、计量方法与一致性检查见 [本次报告](reports/showcase-retrieval-benchmark.json)，设计原理见 [检索文档](docs/RETRIEVAL.md)。
-
-```bash
-python -B scripts/benchmark_retrieval.py --output reports/local-retrieval-benchmark.json
-```
-
-### 261 项本地自动化测试
-
-最近一次完整本地回归：**193 项 Python 测试 + 68 项 JavaScript 测试通过**（2026-10-15）。GitHub Actions 持续运行 Python 3.9 / 3.13 核心兼容性与前端状态检查。
-
-| 覆盖方向 | 关注的实际问题 |
-| --- | --- |
-| 版本与事务 | 幂等导入、来源失效、修订冲突、写入失败回滚 |
-| Agent 执行 | 多轮工具协议、预算、未知工具与无效引用 |
-| 检索缓存 | 缓存复用、跨实例 epoch 变化、返回对象隔离 |
-| HTTP / SSE | 输入边界、执行槽位、断连与步骤事件 |
-| 浏览器状态 | 迟到响应、页面切换、引用选择与切分预览竞争 |
+| 验证 | 证据与边界 |
+|---|---|
+| 完整回归 | **226 项 Python + 68 项 JavaScript 通过**；覆盖权限、引用竞态、条件发布、worker fencing、取消、恢复与界面状态 |
+| 真实书籍 | 《动手学深度学习》文本 PDF 531 页通过原生 HTTP 导入和整书发布，8 组检索/回读/校验；93 页缺字标记保留 |
+| Agent 连接 | 两个真实 LangGraph 图共享 20 连接池，通过回环 HTTP 完成 6 步调用；跨用户 receipt 返回 403，见 [记录](reports/team-agent-http.json) |
+| 20 人并发 | 50,000 合成片段下，10 轮同步突发 **200/200 成功**；20 任务的 3/6 步工具链分别 **60/60、120/120 成功** |
+| 持续负载 | 总 1 req/s、30 分钟：**1,799/1,800 成功**，1 次 504；P95 35.5 ms、P99 56.0 ms，达到本轮 ≥99% SLO，超时完整保留。过载和公平性详见 [完整验收](docs/TEAM_ACCEPTANCE.md) |
+| 备份恢复 | SQLite 一致快照、文件哈希、数据库完整性验证，以及恢复后认证检索；耗时随验收报告保存 |
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python -B -m pytest -q -p no:cacheprovider
 node --test tests/*.cjs
+
+# 使用新目录，实际执行 30 分钟持续阶段及独立突发/公平性阶段
+python -B scripts/verify_team_capacity.py --data-dir data-team-verification --fragments 50000 --seconds 1800
 ```
 
-### 可继续扩展的评测工具
+完整服务 CI 在 Python 3.13 安装固定依赖后运行 pytest/LangGraph 契约测试；另有 Python 3.9/3.13 标准库核心兼容性工作流。远端结果以 Actions 为准。
 
-提供独立的 **8 份虚构语料、dev/holdout 各 12 题**，保存 qrels、文件哈希、检索指标和匿名人工复核包，便于对照固定基线与 Agent 策略。
+容量 fixture 与真实书籍分开验证，不以健康检查 QPS 或合成语料结果代替回答质量。旧本地检索缓存的微基准和 qrels 工具仍可复现，见 [检索基准](reports/showcase-retrieval-benchmark.json) 与 [评测设计](docs/EVALUATION.md)。
 
-```bash
-python -B scripts/run_evaluation.py --split all --retrieval-only --output reports/local-retrieval.json
-```
+## 部署范围
 
-评测入口、评分维度与真实模型调用方式见 [评测设计](docs/EVALUATION.md)。
+当前是一份**单机内部团队实现**：固定一个 workspace、按知识库隔离、一个 API 实例，不提供 SSO、多租户 SaaS、多主机 HA、向量召回、重排或 OCR。真实模型质量与 Agent 收益尚未验证。
 
-## 深入阅读
+团队开放前需要实际域名/TLS、受控备份位置与调度，并在目标主机复验。应用默认仅监听回环地址，正常部署保留 Secure cookie，配置 `allowed_hosts`，禁止直接增加 Uvicorn workers。
 
-| 想了解什么 | 从这里开始 |
-| --- | --- |
-| 快速看懂产品与完整演示 | [产品需求](docs/PRD.md) · [三分钟演示](docs/SHOWCASE.md) |
-| 看懂版本、依赖和事务设计 | [系统架构](docs/ARCHITECTURE.md) · [Wiki 人工修订](docs/WIKI_REVISIONS.md) |
-| 研究检索性能与分块策略 | [BM25 与索引缓存](docs/RETRIEVAL.md) · [文档切分](docs/CHUNKING.md) |
-| 接入模型、CLI 或自己的应用 | [配置与接口指南](docs/TECHNICAL_GUIDE.md) · 运行服务的 `/openapi.json` |
-| 复现与扩展实验 | [评测设计](docs/EVALUATION.md) · [基准报告](reports/showcase-retrieval-benchmark.json) |
+目录默认 10 GiB 准入水位，不替代文件系统硬配额；原文、修订和审计不自动删除。短期 receipt/幂等记录按 TTL 过期。原始书籍、运行数据库、密码和令牌不随仓库分发，项目不读取 `.env`。
 
-<details>
-<summary><strong>代码导航</strong></summary>
+## 文档导航
 
-```text
-zhiwiki/
-├── engine.py          # Agent 循环、工具调度与预算
-├── provider.py        # OpenAI 兼容 HTTP 调用
-├── store.py           # SQLite、版本与事务
-├── retrieval.py       # 分词、BM25 与字符分块
-├── search_index.py    # epoch 感知索引缓存
-├── chunking.py        # 结构切分预览
-├── compiler.py        # Wiki 草稿组织
-├── api.py             # HTTP 与工作台装配
-├── cli.py             # 命令行入口
-└── web/               # 原生浏览器界面
-examples/              # 虚构业务资料与评测集
-tests/                 # Python 与 Node 测试
-scripts/               # 验收、基准与评测
-docs/                  # 技术文档与真实运行截图
-```
+| 目的 | 文档 |
+|---|---|
+| 启动、授权、上传、发布与灾备 | [团队部署与 Agent 接入](docs/TEAM_SERVICE.md) |
+| 请求、响应、错误与幂等语义 | [RAG API 契约](docs/RAG_API_CONTRACT.md) · 登录后 `/v1/openapi.json` |
+| 需求及验收目标 | [团队服务 PRD](docs/PRD_RAG_SERVICE.md) · [实际验收](docs/TEAM_ACCEPTANCE.md) |
+| 本地工作台演示与知识维护 | [三分钟演示](docs/SHOWCASE.md) · [Wiki 修订](docs/WIKI_REVISIONS.md) |
+| 业务核心、检索与评测 | [架构](docs/ARCHITECTURE.md) · [检索](docs/RETRIEVAL.md) · [评测](docs/EVALUATION.md) |
 
-</details>
+实现入口：`zhiwiki/service/` 为团队边界；`engine.py`、`store.py`、`compiler.py` 为工作台与知识核心；`tests/`、`scripts/` 保存测试与复现工具。
 
-<details>
-<summary><strong>运行范围与评测说明</strong></summary>
-
-当前定位是单机、单工作区的知识工作台，完整服务已在 Windows / Python 3.13.14 实际运行；Linux/macOS 提供启动入口，CI 验证标准库核心与前端状态。公网使用、多租户和权限管理需要额外设计。
-
-默认样例流程无需模型密钥；接入模型后启用模型工具决策与综合回答。工具协议通过脚本模型与 Mock HTTP 测试，真实模型的答案质量与 Agent 收益应在目标资料上独立评测。`completed` 表示执行与结构性引用检查完成，语义支持仍需复核；最终引用按条检查，尚未提供所有引用的原子快照核验。SSE 传输执行步骤与最终结果。
-
-当前检索基于 BM25；结构分块提供预览，尚未替换持久化导入默认策略。检索微基准用于比较本地实现路径，不代表模型回答时延或生产并发容量。
-
-数据持久化在 `data/knowledge.sqlite3`。备份使用 SQLite backup API，或停服后复制数据库并妥善处理 WAL。运行数据库、书籍内容和本机配置不随仓库分发。
-
-</details>
-
-## 一起把知识维护做得更好
-
-欢迎通过 [Issues](https://github.com/kayaduster607-jpg/zhiwiki/issues) 分享使用场景、复现问题和改进建议，也欢迎围绕下面的方向提交 PR：
-
-- **检索能力**：向量召回、混合检索、Reranker 与业务评测。
-- **知识维护**：版本差异展示、来源变更提示与引用一致性增强。
-- **使用范围**：多工作区、身份权限与团队协作；初步方案见 [多人服务 PRD](docs/PRD_RAG_SERVICE.md)。
-
-<div align="center">
-
-**如果你也在做有据可查、持续更新的 AI 知识库，欢迎点个 [⭐ Star](https://github.com/kayaduster607-jpg/zhiwiki)。**
-
-也欢迎跑一遍“原文更新 → 知识失效 → 修订发布”，看看你希望它下一步解决什么问题。
-
-</div>
+欢迎通过 [Issues](https://github.com/kayaduster607-jpg/zhiwiki/issues) 提交具体资料与负载场景。向量、重排、多工作区和 SSO 等扩展应同时补充权限、一致性与评测证据。

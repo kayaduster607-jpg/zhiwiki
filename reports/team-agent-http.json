@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-16",
+  "transport": "real loopback HTTP, shared pool20, two independent identities",
+  "langgraph": "1.2.10",
+  "tool_steps": [
+    {
+      "operation": "retrievals",
+      "http_status": 200,
+      "server_elapsed_ms": 25.186
+    },
+    {
+      "operation": "retrievals",
+      "http_status": 200,
+      "server_elapsed_ms": 29.71
+    },
+    {
+      "operation": "evidence:read",
+      "http_status": 200,
+      "server_elapsed_ms": 18.041
+    },
+    {
+      "operation": "evidence:read",
+      "http_status": 200,
+      "server_elapsed_ms": 19.254
+    },
+    {
+      "operation": "citations:validate",
+      "http_status": 200,
+      "server_elapsed_ms": 6.327
+    },
+    {
+      "operation": "citations:validate",
+      "http_status": 200,
+      "server_elapsed_ms": 6.825
+    }
+  ],
+  "all_steps_200": true,
+  "cross_user_receipt_http": 403,
+  "two_graphs_elapsed_ms": 82.12,
+  "model_calls": 0,
+  "semantic_support": "not_checked"
+}
