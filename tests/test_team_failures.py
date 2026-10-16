@@ -428,3 +428,51 @@ def test_team_wiki_permissions_and_source_invalidation(team):
     assert client.get('/v1/workspaces/default/wiki/' + wiki_id, headers=headers(ids['token'])).status_code == 403
     historical = client.get('/v1/workspaces/default/wiki/' + wiki_id)
     assert historical.status_code == 200 and historical.json()['stale']
+
+
+def test_running_idempotent_location_is_pollable_and_private(team):
+    client, services, ids = team
+    from zhiwiki.service.models import RetrievalInput
+    context = services.auth.principal(ids['token'])
+    body = RetrievalInput(query='Return policy', knowledge_base_ids=[ids['kb']]).model_dump(mode='json')
+    receipt_id, replay = services.retrievals.claim(context, 'retrieve', 'pending-request-001', body, time.monotonic() + 2)
+    assert not replay
+    path = '/v1/workspaces/default/retrievals/' + receipt_id
+    response = client.get(path, headers=headers(ids['token']))
+    assert response.status_code == 409 and response.json()['error']['code'] == 'REQUEST_IN_PROGRESS'
+    assert response.headers['Location'] == path
+    second = services.auth.create_user('pending-other', 'pending-other-password')
+    services.auth.grant(second, ids['kb'], 'reader')
+    other_token = services.auth.issue(second, kb_ids=[ids['kb']])['token']
+    assert client.get(path, headers=headers(other_token)).status_code == 403
+
+
+def test_upload_openapi_declares_pre_body_target_query(team):
+    client, _, _ = team
+    schema = client.get('/v1/openapi.json').json()
+    parameters = schema['paths']['/v1/workspaces/{workspace_id}/uploads']['post']['parameters']
+    assert any(value['name'] == 'knowledge_base_id' and value['in'] == 'query' and value['required'] for value in parameters)
+
+
+def test_status_poll_works_while_original_tool_owns_principal_slot(team, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    publish_text(team)
+    client, services, ids = team
+    entered, release = threading.Event(), threading.Event()
+    search = services.indexes.search
+    def paused_search(*args, **kwargs):
+        entered.set()
+        release.wait(1)
+        return search(*args, **kwargs)
+    monkeypatch.setattr(services.indexes, 'search', paused_search)
+    with ThreadPoolExecutor(1) as pool:
+        pending = pool.submit(retrieve, team, key='poll-active-tool')
+        assert entered.wait(1)
+        try:
+            with services.db.tx() as connection:
+                receipt_id = connection.execute("SELECT result_id FROM team_idempotency WHERE key='poll-active-tool'").fetchone()[0]
+            response = client.get('/v1/workspaces/default/retrievals/' + receipt_id, headers=headers(ids['token']))
+            assert response.status_code == 409 and response.json()['error']['code'] == 'REQUEST_IN_PROGRESS'
+        finally:
+            release.set()
+        assert pending.result(timeout=3).status_code == 200

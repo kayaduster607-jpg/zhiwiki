@@ -77,8 +77,52 @@ def retrieval_router(services):
     async def result(retrieval_id: str, request: Request):
         def read(current, stop):
             with services.db.tx(deadline=stop) as connection:
-                return services.retrievals.receipt(connection, current, retrieval_id, scope="retrieve")
-        return await execute(request, read)
+                claimed = connection.execute("SELECT operation,status,expires FROM team_idempotency "
+                                             "WHERE owner=? AND result_id=? AND operation IN ('retrieve','read')",
+                                             (current['id'], retrieval_id)).fetchone()
+                scope = claimed['operation'] if claimed else 'retrieve'
+                services.auth.require(connection, current, scope=scope)
+                if claimed and claimed['status'] == 'running' and claimed['expires'] > time.time():
+                    # Location must remain pollable before a receipt exists.
+                    # Other users cannot distinguish this from an unknown ID.
+                    error = ServiceError(409, 'REQUEST_IN_PROGRESS', retryable=True)
+                    error.location = retrieval_id
+                    raise error
+                return services.retrievals.receipt(connection, current, retrieval_id, scope=scope)
+        current, stop = context(request), deadline(request, services.settings)
+        # Status must remain available while the principal's tool slot is busy.
+        # A small control-plane cap shares rate budgets, never execution slots.
+        if not hasattr(services, 'status_slots'):
+            services.status_slots = asyncio.Semaphore(4)
+            services.status_users = set()
+        if current['id'] in services.status_users:
+            raise ServiceError(429, 'USER_CONCURRENCY_LIMIT', retryable=True)
+        if services.status_slots.locked():
+            raise ServiceError(503, 'OVERLOADED', retryable=True)
+        services.gate.rate_check(current['id'])
+        await services.status_slots.acquire()
+        services.status_users.add(current['id'])
+        try:
+            future = asyncio.get_running_loop().run_in_executor(None, read, current, stop)
+        except BaseException:
+            services.status_users.discard(current['id'])
+            services.status_slots.release()
+            raise
+
+        def finished(done):
+            try:
+                done.exception()
+            except (asyncio.CancelledError, Exception):
+                pass
+            services.status_users.discard(current['id'])
+            services.status_slots.release()
+
+        future.add_done_callback(finished)
+        try:
+            result = await asyncio.wait_for(asyncio.shield(future), max(.001, stop - time.monotonic()))
+        except asyncio.TimeoutError:
+            raise ServiceError(504, 'DEADLINE_EXCEEDED') from None
+        return envelope(request, result)
 
     @router.post("/evidence:read", tags=["retrieval"], response_model=RetrievalOutput)
     async def evidence(payload: ReadInput, request: Request):

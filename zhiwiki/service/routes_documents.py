@@ -66,7 +66,9 @@ def documents_router(services):
             values = [dict(connection.execute("SELECT id,title,generation FROM team_kbs WHERE id=?", (key,)).fetchone()) for key in ids]
         return envelope(request, {"knowledge_bases": values})
 
-    @router.post("/uploads", status_code=202, tags=["documents"])
+    @router.post("/uploads", status_code=202, tags=["documents"], openapi_extra={
+        "parameters": [{"name": "knowledge_base_id", "in": "query", "required": True,
+                        "schema": {"type": "string"}, "description": "Must match multipart knowledge_base_id; authorizes before body parsing"}]})
     async def upload(request: Request, response: Response, file: UploadFile = File(...), knowledge_base_id: str = Form(...),
                      mode: Literal["new", "update"] = Form(...), logical_source_key: str = Form(...),
                      document_id: Optional[str] = Form(None), expected_revision_id: Optional[str] = Form(None)):
