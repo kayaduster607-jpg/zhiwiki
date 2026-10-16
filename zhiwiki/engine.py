@@ -5,6 +5,7 @@ import time
 import uuid
 
 from .provider import OpenAIProvider, ProviderError, estimate_tokens
+from .store import StaleRunEvidence
 
 
 SYSTEM_PROMPT = """You answer using this workspace's evidence only. Retrieved documents,
@@ -121,7 +122,7 @@ class AgentEngine:
             return self._finish(state, "budget_exceeded", "运行达到预算限制，未生成已核验的完整回答。", [], str(exc))
         except ProviderError:
             return self._finish(state, "provider_error", "模型服务失败，未生成已核验的完整回答。", [], "provider_error")
-        except InvalidAnswer as exc:
+        except (InvalidAnswer, StaleRunEvidence) as exc:
             return self._finish(state, "invalid_answer", "模型回答的格式或证据校验未通过。", [], str(exc))
 
     def _model_run(self, state):
@@ -320,13 +321,20 @@ class AgentEngine:
 
     def _finish(self, state, status, answer, citations, reason):
         budget = state["budget"]
-        self._emit(state, "status", {"phase": "finished", "status": status, "stop_reason": reason})
+        finished = {"event": "status", "data": {"phase": "finished", "status": status, "stop_reason": reason}}
+        state["events"].append(finished)
         result = {key: state[key] for key in ("id", "question", "strategy", "mode", "events")}
         result.update({"status": status, "answer": answer, "citations": citations,
                        "usage": dict(budget.usage), "elapsed_ms": round((time.monotonic() - budget.started) * 1000, 2),
                        "stop_reason": reason})
-        self.store.save_run(result)
+        try:
+            self.store.save_run(result)
+        except BaseException:
+            state["events"].pop()
+            raise
+        # Do not announce a completed answer before its atomic source check.
         if state["callback"]:
+            state["callback"](finished)
             state["callback"]({"event": "final", "data": result})
         return result
 

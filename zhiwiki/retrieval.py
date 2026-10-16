@@ -5,6 +5,7 @@ prepared index reuses token counts; its owner controls SQLite snapshot freshness
 """
 
 import math
+import heapq
 import re
 from collections import Counter, defaultdict
 from copy import deepcopy
@@ -104,7 +105,7 @@ class BM25Index:
         average = sum(self.lengths[index] for index in indices) / max(len(indices), 1) or 1.0
         return indices, frequencies, average
 
-    def search(self, query, limit=5, kind="all"):
+    def search(self, query, limit=5, kind="all", check_cancel=None):
         """BM25 k1=1.5, b=0.75; count/title weighting is unchanged from v2."""
         terms = set(tokenize(query))
         anchors = _anchor_terms(query)
@@ -115,15 +116,17 @@ class BM25Index:
         for term in anchors:
             candidates.update(self.postings.get(term, ()))
         ranked = []
-        for index in candidates.intersection(indices):
+        for position, index in enumerate(candidates.intersection(indices)):
+            if check_cancel is not None and position % 128 == 0:
+                check_cancel()
             score = _bm25_score(terms, self.counters[index], self.lengths[index],
                                 average, frequencies, len(indices))
             if score > 0:
-                result = deepcopy(self.items[index])
-                result["score"] = round(score, 8)
-                ranked.append(result)
-        ranked.sort(key=lambda item: (-item["score"], item["id"]))
-        return ranked[:limit]
+                ranked.append((round(score, 8), index))
+        # Copy only selected results: high-frequency terms must not duplicate
+        # the entire corpus just to discard all but top-k afterwards.
+        selected = heapq.nsmallest(limit, ranked, key=lambda item: (-item[0], self.items[item[1]]["id"]))
+        return [dict(deepcopy(self.items[index]), score=score) for score, index in selected]
 
 
 def _bm25_score(terms, counts, length, average_length, frequencies, document_count):

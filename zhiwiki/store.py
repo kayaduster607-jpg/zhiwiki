@@ -522,8 +522,31 @@ class KnowledgeStore:
         if len(encoded) > 2_000_000:
             raise ValueError("运行记录超过 2,000,000 字符上限")
         with self._connection(write=True) as connection:
+            # Recheck the entire citation set under the same writer transaction
+            # as INSERT. Source publication cannot slip between check and save.
+            for evidence in record.get("citations", []):
+                self._check_run_evidence(connection, evidence)
             connection.execute("INSERT INTO runs VALUES (?,?,?)", (run_id, encoded, record["created_at"]))
         return run_id
+
+    def _check_run_evidence(self, connection, evidence):
+        """Validate immutable text/version and current state, including Wiki roots."""
+        evidence_id = evidence.get("id")
+        row = connection.execute(CHUNK_WITH_DOCUMENT + " WHERE c.id=?", (evidence_id,)).fetchone()
+        if row:
+            current = self._joined_chunk_evidence(row)
+        else:
+            row = connection.execute("SELECT * FROM wikis WHERE id=?", (evidence_id,)).fetchone()
+            current = self._wiki_evidence(connection, row) if row else None
+        if (not current or not current["active"] or current["version"] != evidence.get("version")
+                or current["text"] != evidence.get("text")):
+            raise StaleRunEvidence("stale_or_unseen_evidence")
+        if current["kind"] == "wiki":
+            originals = evidence.get("source_evidence", [])
+            if {item["id"] for item in originals} != set(current["source_ids"]):
+                raise StaleRunEvidence("missing_wiki_sources")
+            for original in originals:
+                self._check_run_evidence(connection, original)
 
     def get_run(self, run_id):
         with self._connection() as connection:
@@ -531,3 +554,7 @@ class KnowledgeStore:
             if row is None:
                 raise KeyError(run_id)
             return json.loads(row["payload_json"])
+
+
+class StaleRunEvidence(ValueError):
+    """A source changed before the answer's atomic persistence checkpoint."""

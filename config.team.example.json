@@ -1,0 +1,21 @@
+{
+  "data_dir": "data-team",
+  "cookie_secure": true,
+  "allowed_hosts": ["127.0.0.1", "localhost", "rag.internal.example"],
+  "active_requests": 4,
+  "accepted_requests": 20,
+  "queue_timeout_ms": 1500,
+  "request_timeout_ms": 2000,
+  "user_rpm": 30,
+  "global_rpm": 120,
+  "user_burst": 6,
+  "global_burst": 120,
+  "max_upload_bytes": 209715200,
+  "max_pdf_pages": 2000,
+  "worker_memory_mb": 1024,
+  "page_timeout_seconds": 30,
+  "max_job_seconds": 1800,
+  "worker_lease_seconds": 60,
+  "max_workspace_bytes": 10737418240,
+  "max_indexed_chunks": 50000
+}
