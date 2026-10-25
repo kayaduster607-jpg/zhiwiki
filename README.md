@@ -26,6 +26,40 @@
 
 <div align="center">截图为本地工作台；团队服务使用独立登录页、授权与 API。</div>
 
+## 先用一次：从资料输入到回答、引用和Wiki
+
+**个人演示先用8875，团队服务用8872。**它们是两套运行入口，默认数据目录与权限模型不同。
+
+| 你输入什么 | 操作入口 | 输出 |
+| --- | --- | --- |
+| 示例或自己的MD/TXT/DOCX资料 | 本地导入命令/工作台上传 | 原文、分块、文档ID与修订版本 |
+| 对资料的问题 | 页面提问或CLI ask | 回答、来源证据与执行状态 |
+| 要整理的主题与来源 | Wiki草稿、人工修订、发布入口 | 有版本和来源依赖的Wiki页面，可导出Markdown |
+
+### 无Key的第一次个人演示
+
+按后文安装依赖后，从仓库根目录执行：
+
+```powershell
+python -B -m zhiwiki --config config.example.json seed
+python -B -m zhiwiki --config config.example.json serve --port 8875
+```
+
+1. 打开 `http://127.0.0.1:8875`。默认offline模式不用Key，seed显式加载虚构资料与人工示例Wiki。
+2. 提问“2026年退款政策与2025年有什么区别？”，再展开证据，检查原文、片段ID和版本。offline是确定性摘录流程，不等于真实模型推理效果。
+3. 上传自己的小型TXT/Markdown，或运行下面的CLI导入；新建来源与更新旧来源是两种不同操作。
+
+```powershell
+python -B -m zhiwiki --config config.example.json ingest examples/documents/shipping.md
+python -B -m zhiwiki --config config.example.json ask "What do the shipping documents say?"
+python -B -m zhiwiki --config config.example.json wiki list
+```
+
+4. 在工作台打开Wiki，人工修订后先保存草稿，再显式发布。要观察知识失效，更新同一个source_key的原文，而不是仅增加一个相似文件名。
+5. 需要文件时，先从wiki list拿到实际页面ID，再用 `wiki export <ID> --output exports/page.md`；尖括号占位符必须替换，命令不会替你自动选择页面。
+
+**结果位置：**默认本地数据库在 `data/`，导出Markdown在你给出的路径；页面上的回答不会自动变成下载文件。团队入口还需建管理员、启动独立worker、分配知识库和只读令牌，按后文团队手册执行，不能拿个人演示入口直接替代团队服务。
+
 ## 核心能力
 
 | 能力 | 实际行为 |

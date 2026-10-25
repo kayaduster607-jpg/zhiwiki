@@ -2,6 +2,21 @@
 
 本目录是一套人工编写的售后运营演练资料。商城、产品、订单、活动、流程和价格均为虚构，不代表真实商家的服务承诺、法律或税务规则、产品认证、交易结果或模型效果。
 
+## 第一次载入与查看结果
+
+这套输入是仓库中的16份虚构Markdown原文、manifest和人工Wiki定义，不需要你先填写真实客户数据。
+
+从仓库根目录执行：
+
+```powershell
+python -B -m zhiwiki --config config.example.json seed
+python -B -m zhiwiki --config config.example.json serve --port 8875
+```
+
+打开http://127.0.0.1:8875，提问、展开原文引用，再查看sample前缀的人工Wiki。输出是本地数据库中的文档/片段/示例Wiki及页面回答，不会自动往examples目录写一份新Markdown。
+
+要导出文件，先列出实际Wiki ID，再按主README的wiki export命令指定输出路径。再次seed保持既定幂等规则，不会替你覆盖已编辑的用户页面。数据均为虚构，offline摘录不等于模型效果评测。
+
 ## 内容与导入
 
 `manifest.json` 是唯一的资料导入清单，固定列出 16 份 Markdown 原文及其标题、分类、更新时间、来源键和简介。`README.md`、评测题和 Wiki 定义不进入原文知识库。只有用户显式执行样例载入动作时才导入；包导入和服务启动不自动载入这些资料。
