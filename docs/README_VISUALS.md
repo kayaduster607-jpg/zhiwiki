@@ -1,5 +1,7 @@
 # README 视觉图生成说明
 
+[简体中文](README_VISUALS.md) | [English](README_VISUALS.en.md)
+
 生成日期：2026-10-16。工具：内置 ImageGen。以下为概念流程图与模块分层图；运行界面图片仍使用真实浏览器截图。
 
 ## 最终资产
